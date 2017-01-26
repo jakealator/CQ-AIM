@@ -9,7 +9,7 @@ convolution quadrature time stepper and sped-up piecewise constant Galerkin
 spatial discretization. Speed up is via the adaptive integral methid (AIM), 
 which computes near field contributions with a Galerkin approach and far 
 field contributions with a fast Fourier transform (FFT) approach. For many
-more details on this, see chapter 5 of my Ph.D thesis, available here. 
+more details on this, see chapter 5 of my Ph.D thesis (which is not yet publically available).  
 
 ## Getting Started
 
