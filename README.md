@@ -16,3 +16,5 @@ more details on this, see chapter 5 of my Ph.D thesis (which is not yet publical
 To run this code, download all files in the repository to the same folder. 
 Run Matlab through that folder.
 
+## Author
+Jacob D. Rezac
