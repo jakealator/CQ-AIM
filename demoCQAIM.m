@@ -21,6 +21,8 @@ addpath genpath('./modules') % Contains the programs which actually compute
 
 %---- Initialize parameters ----%
 
+generateAuxillaryParams();
+
 
 
 %---- Generate scattered field data ----%
