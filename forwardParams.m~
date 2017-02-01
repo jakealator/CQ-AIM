@@ -1,0 +1,19 @@
+% forwardParams.m
+%
+% Script containing physical parameters related to CQ-AIM simulation. 
+% 
+
+
+c0 = 1;
+c=@(x,y)(sqrt(2));
+
+mesh = 'twoCircles';
+
+
+
+% Initialize mesh (use p=1 even though that's not true)
+meshStruct = initialize_mesh(mesh,1);
+
+N=meshStruct.nt; % number of centroid points
+
+qc=@(x,y)((c0/c(x,y))^2-1+x.*zeros(N,1));
