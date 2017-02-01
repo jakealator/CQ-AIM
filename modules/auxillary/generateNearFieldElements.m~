@@ -22,12 +22,19 @@ multipoleMatrix = zeros(meshStruct.nt,meshStruct.nt);
 % For each value in the first column of meshStruct.tris, i, determine which
 % other rows of meshStruct.tris, j, also contain that value. If the jth
 % row contains the ith value, matrix element (i,j)=1. Otherwise (i,j)=0.
+k = 0;
 for i=1:N
-    cElement = meshStruct.tris(i,1);
-    for j=1:N
-    if ((meshStruct.tris(j,1)==cElement) || (meshStruct.tris(j,2)==cElement) || (meshStruct.tris(j,3)==cElement))
-        multipoleMatrix(i,j) = 1;
-        
+    cElement = meshStruct.tris(i,1); % pick current element to test against
+    for j=1:N % test all the other elements against cElement (note everything is an integer so == is fine)
+        if ((meshStruct.tris(j,1)==cElement) || (meshStruct.tris(j,2)==cElement) || (meshStruct.tris(j,3)==cElement))
+            k=k+1;
+            %multipoleMatrix(i,j) = 1;
+            iElements(i) = i;
+            jElements(j) = j;
+            sElements(k) = 1;
+        end
+    end
+end
 
 
 end

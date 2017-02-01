@@ -15,7 +15,10 @@
 %         h               - a scalar giving the spatial discretization size of
 %                           the mesh .
 %         multipoleMatrix - NxN matrix with values <=M so that if (i,j)th
-%                           element is 0<m then i
+%                           element is 0<m then i is m elements away from
+%                           j. If (i,j)=0, i is more than M elements from
+%                           j. By convention, (i,i)=M. 
+%         nearField
 %         farFieldGrid    - 
 %
 % Generates auxillary parameters needed for frequency domain AIM. In
@@ -25,7 +28,7 @@
 % contains 4r. Spacing of grid is dictated by h and by the parameter M, the
 % multipole expansion order
 
-function [centroids, triAreas, h] = generateAuxillaryParams(meshStruct, N)
+function [centroids, triAreas, h, multipoleMatrix, nearFieldDistances] = generateAuxillaryParams(meshStruct, N, M)
 
 
     % initialize centroids
@@ -36,6 +39,12 @@ function [centroids, triAreas, h] = generateAuxillaryParams(meshStruct, N)
     
     % spatial discretization parameter h
     h = mesh_size(meshStruct);
-
+    
+    %intitialize multipole matrix
+    multipoleMatrix = generateNearFieldElements(meshStruct, N, M);
+    
+    % Calculate distances between near field elements
+    % !!!!Currently only works for M=1!!!!
+    nearFieldDistances = generateNearFieldDistances(centroids, multipoleMatrix, N,M);
 
 end
