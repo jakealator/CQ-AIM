@@ -1,24 +1,25 @@
-function [x,x1,x2,x3] = generateCentroids(mesh,N)
+% generateCentroids.m
+% Created: Spring 2014 by jdr
+% Last modified: 02-01-2017 by JDR in Newark
+%
+% Input: meshStruct - a struct containing mesh information, given by
+%                     initialize_mesh.m. 
+%        N          - number of elements
+% Output: x         - Nx2 vector containing centroids. 
+%
+% Calculates centroids of elements in a mesh given the node information
+% about the mesh. 
 
-% Find barycentric centers of triangles and barycentric centers of the
-% three subtriangles defined by using the barycentric center of the
-% original triangle and two of the original triangle vertices. 
+function x = generateCentroids(meshStruct,N)
+
+% Find barycentric centers of triangles
 x = zeros(N,2);
-x1 = zeros(N,2);
-x2 = zeros(N,2);
-x3 = zeros(N,2);
-% Generate centroid points. x are the centroids of the original triangle.
-% x#c are the centroids of the subtriangles (for singular part of integral)
-% Also generate interior points needed for 1st order quadrature x1,x2,x3. 
-for i=1:N
-     x(i,1) = 1/3*sum(mesh.nodes(mesh.tris(i,1:3),1));
-     x(i,2) = 1/3*sum(mesh.nodes(mesh.tris(i,1:3),2));
-     x1(i,1) = 1/6*(4*mesh.nodes(mesh.tris(i,1),1)+sum(mesh.nodes(mesh.tris(i,2:3),1)));
-     x1(i,2) = 1/6*(4*mesh.nodes(mesh.tris(i,1),2)+sum(mesh.nodes(mesh.tris(i,2:3),2)));
-     x2(i,1) =  1/6*(4*mesh.nodes(mesh.tris(i,1),1)+sum(mesh.nodes(mesh.tris(i,[1,3]),1)));
-     x2(i,2) = 1/6*(4*mesh.nodes(mesh.tris(i,1),2)+sum(mesh.nodes(mesh.tris(i,[1,3]),2)));
-     x3(i,1) = 1/6*(4*mesh.nodes(mesh.tris(i,3),1)+sum(mesh.nodes(mesh.tris(i,1:2),1)));
-     x3(i,2) = 1/6*(4*mesh.nodes(mesh.tris(i,3),2)+sum(mesh.nodes(mesh.tris(i,1:2),2)));
+% Generate centroid points, the 'center' point of each triangle. Order is
+% the same as mesh.tris. Note that algorithm is a little slow wrt using a
+% loop, but meshStruct data structure seems to require this. 
+for j=1:N
+    x(j,1) = 1/3*sum(meshStruct.nodes(meshStruct.tris(j,1:3),1));
+    x(j,2) = 1/3*sum(meshStruct.nodes(meshStruct.tris(j,1:3),2));
 end
 
 end

@@ -8,12 +8,14 @@
 % Description: Calculates the radius of the smallest circumscribed circle
 % around each triangle in Mesh. 
 
-function h = mesh_size(Mesh)
+function h = mesh_size(meshStruct)
 
  % Calculate Mesh.nt x 3 array of side lengths for each triangle in mesh. 
- sideLength = edgeLength(Mesh);
+ sideLength = edgeLength(meshStruct);
+ % Using side lengths, the h parameter can be constructed. 
  hK = triangleSizeParameter(sideLength);
  
+ % h is defined as the maximum h over all the elements.
  h = max(hK); 
 
 end

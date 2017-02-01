@@ -10,17 +10,15 @@
 
 
 %---- User Editable Parameters ----%
-c0 = 1; % Speed of sound in free space
-c=@(x,y)(sqrt(2)); % Speed of sound in inhomogeneity 
-mesh = 'twoCircles'; % name of mesh file
+c0 = 1; % Speed of sound in free space (default=1)
+c=@(x,y)(sqrt(2)); % Speed of sound in inhomogeneity (should be either 0<c<1 or 1<c<2 in general)
+mesh = 'twoCircles'; % name of mesh file (see ./modules/meshes for names)
 %----------------------------------%
 
 
 %---- Derived parameters ----%
 
-% Initialize mesh (use p=1 even though that's not true)
-meshStruct = initialize_mesh(mesh,1);
+% Initialize mesh variables used throughout code
+meshStruct = initialize_mesh(mesh,1); % Initialize mesh (always use p=1 in second argument)
 N=meshStruct.nt; % number of centroid points
-
-qc=@(x,y)((c0/c(x,y))^2-1+x.*zeros(N,1)); % Index of refraction
 %-----------------------------%
