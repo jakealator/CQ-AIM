@@ -1,0 +1,18 @@
+% test_generateTriangleAreas.m
+% Created: 02-01-2017 by JDR in Newark
+% Last Modified: 
+%
+% Tests that the program generateTriangleAreas.m works correctly by checking
+% if a few specially chosen triangle areas are computed correctly.
+
+% Need to create a struct with the appropriate information in order to
+% test. 
+
+% Three triangles at: (0,0)--(1,0)--(0,1) [area = 
+trisVals = [[1,2,3];[2,3,4];[4,1,5]];
+nodeVals = [[0,0];[1,0];[0,1];[0,-1];[-1,0]];
+nt = 3;
+
+meshStruct = struct('nt',nt,'tris',trisVals,'nodes',nodeVals);
+
+triangleAreas = generateTriangleAreas(meshStruct,3);

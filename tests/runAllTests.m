@@ -22,4 +22,5 @@ N=meshStruct.nt; % number of centroid points
 
 
 %---- Start running tests ----%
-test_generateCentroids
+test_generateCentroids % generateCentroids.m
+test_generateTriangleAreas % generateTriangleAreas.m

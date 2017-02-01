@@ -4,12 +4,13 @@
 %
 % Input: meshStruct - a struct containing mesh information, including nodal
 %                     locations (created by initialize_mesh.m)
+%        N          - number of elements
 %        M          - multipole expansion order (1 or 2)
 %        
 %
-% Output: centroids    - vector of size #elementsx2 giving the centroid
+% Output: centroids    - vector of size Nx2 giving the centroid
 %                        of each element. 
-%         triAreas     - vector of size #elementsx1 giving area of each
+%         triAreas     - vector of size Nx1 giving area of each
 %                        element. 
 %         h            - a scalar giving the spatial discretization size of
 %                        the mesh .
@@ -22,14 +23,17 @@
 % contains 4r. Spacing of grid is dictated by h and by the parameter M, the
 % multipole expansion order
 
-function [centroids, triAreas, h] = generateAuxillaryParams(meshStruct, M)
+function [centroids, triAreas, h] = generateAuxillaryParams(meshStruct, N, M)
 
 
-
-    area = areaTri(x,y);
+    % initialize centroids
+    centroids = generateCentroids(meshStruct, N);
+    
+    %initialize triangle areas
+    triAreas = generateTriangleAreas(meshStruct, N);
     
     % spatial discretization parameter h
-    h = mesh_size(meshStruct)
+    h = mesh_size(meshStruct);
 
 
 end
