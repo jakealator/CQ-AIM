@@ -42,10 +42,10 @@ function [centroids, triAreas, h, multipoleMatrix, nearFieldDistances] = generat
     h = mesh_size(meshStruct);
     
     %intitialize multipole matrix
-    multipoleMatrix = generateNearFieldElements(meshStruct, N, M);
+    [iElements, jElements, multipoleMatrix] = generateNearFieldElements(meshStruct, N, M);
     
     % Calculate distances between near field elements
     % !!!!Currently only works for M=1!!!!
-    nearFieldDistances = generateNearFieldDistances(centroids, multipoleMatrix, N,M);
+    nearFieldDistances = generateNearFieldDistances(centroids, iElements, jElements, N,M);
 
 end

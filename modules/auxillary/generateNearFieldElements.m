@@ -14,7 +14,7 @@
 % Determines how far away each mesh element is from each other element, up
 % to the user-determined multipole expansion. 
 
-function multipoleMatrix = generateNearFieldElements(meshStruct,N,M)
+function [iElements, jElements, multipoleMatrix] = generateNearFieldElements(meshStruct,N,M)
 
 % For each value in the first column of meshStruct.tris, i, determine which
 % other rows of meshStruct.tris, j, also contain that value. If the jth
