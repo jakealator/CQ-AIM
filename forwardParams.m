@@ -19,8 +19,8 @@ ui=@(x,y,t)(sin(aUi.*(t-(d(1).*x+d(2).*y)./c0)).*exp(-bUi.*(t-(d(1).*x+d(2).*y).
 %tlagUi = 3;
 %ui=@(x,y,t)(sin(c0*(t-tlagUi)-(x.*d(1)+y.*d(2))).*exp(-bUi*(c0*(t-tlagUi)-(x.*d(1)+y.*d(2))).^2));
 % to change direction of plane wave, set d=[cos(th),sin(th)]
-mesh = 'arminCircleh0261';
-meshExt = 'arminCircleExterior';
+mesh = 'twoCircles';
+
 
 
 % Initialize mesh (use p=1 even though that's not true)

@@ -20,5 +20,7 @@ function generateAuxillaryParams(meshStruct, M)
 
 
 
+    area = areaTri(x,y);
+
 
 end

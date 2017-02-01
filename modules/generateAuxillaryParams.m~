@@ -4,7 +4,8 @@
 %
 % Input: meshStruct - a struct containing mesh information, including nodal
 %                     locations
-%        M          - multi
+%        M          - multipole expansion order (1 or 2)
+%        
 %
 % Output:
 %
@@ -14,3 +15,10 @@
 % assume finite element grid is contained in a ball of radius r. The grid
 % contains 4r. Spacing of grid is dictated by h and by the parameter M, the
 % multipole expansion order
+
+function generateAuxillaryParams(meshStruct, M)
+
+    area = areaTri(x,y);
+
+
+end

@@ -16,11 +16,11 @@
 %------ Begin Demo ------%
 
 % Add required folders 
-addpath genpath('./demo') % Contains physical, geometric, and computational parameters for demo
-addpath genpath('./modules') % Contains the programs which actually compute
+addpath(genpath('demo')) % Contains physical, geometric, and computational parameters for demo
+addpath(genpath('modules')) % Contains the programs which actually compute
 
 %---- Initialize parameters ----%
-
+forwardParams
 generateAuxillaryParams();
 
 
