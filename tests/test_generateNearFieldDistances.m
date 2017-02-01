@@ -10,7 +10,7 @@
 % TODO: This actually fails when you compare against 1E-15 for a tolerance.
 % Probably this isn't a problem, but it is very strange. 
 
-if ~exist('allTestsBool','var')
+if ~exist('allTestsBool','var') || (exists('allTestsBool','var') && allTestsBool~=1)
         % Add correct path to get meshes and files-to-test on path
         cd ../
         addpath(genpath('modules'))
@@ -26,10 +26,10 @@ end
 % test_generateCentroids.m)
 centroids = generateCentroids(meshStruct,N);
 % Generate multiple connectivity matrix 
-multipoleMatrix = generateNearFieldElements(meshStruct,N,M);
+[iElements, jElements, multipoleMatrix] = generateNearFieldElements(meshStruct,N,M);
 % Generate sparse near field distance matrix with
 % generateNearFieldDistances.
-nearFieldDistances = full(generateNearFieldDistances(centroids, multipoleMatrix, N,M));
+nearFieldDistances = full(generateNearFieldDistances(centroids, iElements, jElements, N,M));
 
 % Calculate full distance matrix for all elements (could be slow!)
 D = sqrt(bsxfun(@plus,full(dot(centroids',centroids',1)),full(dot(centroids',centroids',1))')-full(2*(centroids*centroids')));
@@ -42,4 +42,4 @@ for i=1:N
         end
     end
 end
-
+sprintf('generateNearFieldDistances Tests: Comparison with full matrix: PASSED')
