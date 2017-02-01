@@ -21,4 +21,7 @@ mesh = 'twoCircles'; % name of mesh file (see ./modules/meshes for names)
 % Initialize mesh variables used throughout code
 meshStruct = initialize_mesh(mesh,1); % Initialize mesh (always use p=1 in second argument)
 N=meshStruct.nt; % number of centroid points
+
+% Far field parameters
+M = 1; % Multipole expansion parameter
 %-----------------------------%

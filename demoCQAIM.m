@@ -21,8 +21,7 @@ addpath(genpath('modules')) % Contains the programs which actually compute
 
 %---- Initialize parameters ----%
 forwardParams
-generateAuxillaryParams();
-
+[centroids, triAreas, h, multipoleMatrix] = generateAuxillaryParams(meshStruct, N, M);
 
 
 %---- Generate scattered field data ----%

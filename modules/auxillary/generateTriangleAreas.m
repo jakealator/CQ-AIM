@@ -25,7 +25,7 @@ Tx = nodesX(mesh.tris(:,1:3));
 Ty = nodesY(mesh.tris(:,1:3));
 
 % Define the area of each triangle with areaTri function. 
-for i=1:mesh.nt
+for i=1:N
     triangleAreas(i) = areaTri(Tx(i,:),Ty(i,:));
 end
 
