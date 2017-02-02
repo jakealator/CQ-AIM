@@ -1,6 +1,6 @@
 % generateAuxillaryParams.m
-% Created: 01-31-2017 by jdr at home in Newark
-% Last Modified: 02-02-2017 by JDR at UD
+% Created: 01-31-2016 by jdr at home in Newark
+% Last Modified:
 %
 % Input: meshStruct - a struct containing mesh information, including nodal
 %                     locations (created by initialize_mesh.m)
@@ -22,8 +22,7 @@
 %                              j. By convention, (i,i)=M. 
 %         nearFieldDistances - NxN sparse matrix storing the distance
 %                              between element i and j in location (i,j). 
-%         farFieldGrid       - A Cartesean grid covering domain which is
-%                              sufficiently dense (space = h/2).
+%         farFieldGrid       - A Cartesean grid covering domain and 
 %
 % Generates auxillary parameters needed for frequency domain AIM. In
 % particular, given a finite element mesh, code gives triangle centroids,
