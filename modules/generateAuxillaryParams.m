@@ -14,6 +14,8 @@
 %                              element. 
 %         h                  - a scalar giving the spatial discretization size of
 %                              the mesh .
+%         i/jElements        - <Nx1 sparse matrices indexing locations of
+%                              near field elements within an NxN matrix.
 %         multipoleMatrix    - NxN sparse matrix with values <=M so that if (i,j)th
 %                              element is 0<m then i is m elements away from
 %                              j. If (i,j)=0, i is more than M elements from
@@ -29,7 +31,7 @@
 % contains 4r. Spacing of grid is dictated by h and by the parameter M, the
 % multipole expansion order
 
-function [centroids, triAreas, h, multipoleMatrix, nearFieldDistances] = generateAuxillaryParams(meshStruct, N, M)
+function [centroids, triAreas, h, iElements, jElements, multipoleMatrix, nearFieldDistances] = generateAuxillaryParams(meshStruct, N, M)
 
 
     % initialize centroids

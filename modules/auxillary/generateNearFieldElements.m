@@ -16,23 +16,32 @@
 
 function [iElements, jElements, multipoleMatrix] = generateNearFieldElements(meshStruct,N,M)
 
-% For each value in the first column of meshStruct.tris, i, determine which
-% other rows of meshStruct.tris, j, also contain that value. If the jth
-% row contains the ith value, matrix element (i,j)=1. Otherwise (i,j)=0.
-k = 0; % tracks number of non-zero elements
-for i=1:N
-    cElement = meshStruct.tris(i,1); % pick current element to test against
-    for j=1:N % test all the other elements against cElement (note everything is an integer so == is fine)
-        if ((meshStruct.tris(j,1)==cElement) || (meshStruct.tris(j,2)==cElement) || (meshStruct.tris(j,3)==cElement))
-            k=k+1;
-            iElements(k) = i; % iElements keeps track of the column number
-            jElements(k) = j; % jElements keeps track of the row number
+% If M=0, there is no near/far field distinction (mostly for testing)
+if M==0
+    [iElements, jElements] = meshgrid(1:N,1:N); % index a loop through a matrix
+    iElements = iElements(:); jElements = jElements(:); % flatten to put in correct order/size
+    multipoleMatrix = ones(N,N);
+    
+elseif M==1 
+    % For each value in the first column of meshStruct.tris, i, determine which
+    % other rows of meshStruct.tris, j, also contain that value. If the jth
+    % row contains the ith value, matrix element (i,j)=1. Otherwise (i,j)=0.
+    k = 0; % tracks number of non-zero elements
+    for i=1:N
+        cElement = meshStruct.tris(i,1); % pick current element to test against
+        for j=1:N % test all the other elements against cElement (note everything is an integer so == is fine)
+            if ((meshStruct.tris(j,1)==cElement) || (meshStruct.tris(j,2)==cElement) || (meshStruct.tris(j,3)==cElement))
+                k=k+1;
+                iElements(k) = i; % iElements keeps track of the column number
+                jElements(k) = j; % jElements keeps track of the row number
+            end
         end
     end
+    % Since we just want a one where the elements are connected, we can use a
+    % ones matrix. This will be more complicated when M>1.
+    multipoleMatrix = sparse(iElements,jElements,ones(k,1),N,N);
+else
+    error('generateNearFieldElements.m: Sorry, multipole M>1 not supported.')
 end
-% Since we just want a one where the elements are connected, we can use a
-% ones matrix. This will be more complicated when M>1.
-multipoleMatrix = sparse(iElements,jElements,ones(k,1),N,N);
-
 
 end
