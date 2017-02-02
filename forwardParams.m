@@ -24,5 +24,5 @@ meshStruct = initialize_mesh(mesh,1); % Initialize mesh (always use p=1 in secon
 N=meshStruct.nt; % number of centroid points
 
 % Far field parameters
-M = 0; % Multipole expansion parameter
+M = 1; % Multipole expansion parameter
 %-----------------------------%
