@@ -2,13 +2,11 @@
 % Created: 02-01-2017 by JDR in Newark
 % Last Modified: 
 %
-% Input: N          - number of elements
+% Input: meshStruct - a structure containing information about mesh given
+%                     by initialize_mesh.m
+%        N          - number of elements
 %        M          - multipole expansion order (currently only 1)
-%        hGrid      - grid size of rectangular grid
-%        d          - user parameter defining what "far" means
-% Output:  i/jElements     - vectors containing the nonzero elements of
-%                            multipoleMatrix
-%          multipoleMatrix - a sparse matrix #elementsx#elements with values 
+% Output: multipoleMatrix - a sparse matrix #elementsx#elements with values 
 %                           in {0,1,...,M} such that if element
 %                           i is m elements away from j then (i,j)=m. If
 %                           m>M then (i,j)=0. 
@@ -16,7 +14,7 @@
 % Determines how far away each mesh element is from each other element, up
 % to the user-determined multipole expansion. 
 
-function [iElements, jElements, multipoleMatrix] = generateNearFieldElements(N,M,hGrid,d)
+function [iElements, jElements, multipoleMatrix] = generateNearFieldElements(meshStruct,N,M)
 
 % If M=0, there is no near/far field distinction (mostly for testing)
 if M==0
@@ -33,9 +31,9 @@ elseif M==1
     
     k = 0; % tracks number of non-zero elements
     for i=1:N
-        cElement = centers(i); % pick current element to test against
+        cElement = centers(j); % pick current element to test against
         for j=1:N % test all the other elements against cElement (note everything is an integer so == is fine)
-            if (sqrt((cElement(1)-centers(j,1))^2+(cElement(2)-centers(j,2))^2)<d*hGrid)
+            if ((meshStruct.tris(j,1)==cElement) || (meshStruct.tris(j,2)==cElement) || (meshStruct.tris(j,3)==cElement))
                 k=k+1;
                 iElements(k) = i; % iElements keeps track of the column number
                 jElements(k) = j; % jElements keeps track of the row number
