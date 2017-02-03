@@ -2,16 +2,30 @@
 % Created: 02-01-2017 by JDR at UD
 % Last Modified: 
 %
-% Input:
+% Input: triAreas            - Nx1 vector of element areas
+%        nearFieldDistances  - NxN sparse matrix of distances between the
+%                              near field elements
+%        i/jElements         - indices of near field elements
+%        centroids           - Nx1 vector of centroids
+%        rectangularElements - nGx9 matrix of the rectangular grid squares
+%        V                   - NxnG interpolation matrix 
+%        c                   - anonymous function speed of sound in medium
+%        c0                  - speed of sound in free space
+%        s                   - frequency
+%        N                   - number of elements
 %
-% Output:
+% Output: K               - "stiffness" matrix
+%         M               - "mass" matrix
+%         nearFieldMatrix - K+M
 %
 % Outputs the near field components of the AIM algorithm for computing the
 % action of the time-harmonic Lippmann-Schwinger equation on a vector. Uses
 % p=0 piecewise constant elements on each element and approximates
 % integrals on triangles with an exact formula on an equal area circle. 
 
-function [K,M,nearFieldMatrix] = assembleNearFieldMatrices(triAreas,nearFieldDistances, iElements, jElements, centroids, c,c0,s,N)
+function [K,M,nearFieldMatrix] = assembleNearFieldMatrices(triAreas, ...
+    nearFieldDistances, iElements, jElements, centroids, ...
+    rectangularElements, V, c,c0,s,N)
 
 % Contrasts at centroid points
 qj =((c0./c(centroids(:,1),centroids(:,2))).^2-ones(N,1));

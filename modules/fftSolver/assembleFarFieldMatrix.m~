@@ -1,0 +1,10 @@
+% assembleFarFieldMatrix.m
+% Created on 02-03-2017 by JDR in Newark
+% Last Modified:
+% 
+% Inputs:
+%
+% Outputs: 
+%
+% Generates the elements of the far field matrix corresponding to given
+% points (i,j). In partic
