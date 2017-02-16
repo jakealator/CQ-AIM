@@ -20,7 +20,7 @@
 % interpolation matrix V which maps functions on a triangular element to a
 % function on the new rectangular element. 
 
-function [centers, rectangularElementsX, V] = generateFarFieldElements(centroids, N, farFieldGrid)
+function [centers, rectangularElementsX, rectangularElementsY, V] = generateFarFieldElements(centroids, N, farFieldGrid)
 
 nG = length(farFieldGrid);
 centers = zeros(N,2);

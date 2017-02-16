@@ -47,10 +47,7 @@ for k = 1:length(iElements)
     end
 end
 
-% Subtract off the extra far field contributions to prevent double counting
-% in the near field (order is the same as KElements because i/jElements are
-% used to order both. 
-KElements = KElements - extraFarFieldElements;
+% Subtract off the extra far field contributions to prevent 
     
 % Create a sparse matrix whose diagonal elements correspond to qj at
 % required are exactly the ones
