@@ -9,9 +9,12 @@
 
 function [midpointsX, midpointsY] = generateMidpoints(meshStruct,N)
 
+midPointsX = zeros(N,3);
+midPointsY = zeros(N,3);
+
 for j=1:N
-    midpointsX = (meshStruct.nodes(meshStruct.tris(j,1:3),1)+circshift(meshStruct.nodes(meshStruct.tris(j,1:3),1),1))/2;
-    midpointsY = (meshStruct.nodes(meshStruct.tris(j,1:3),2)+circshift(meshStruct.nodes(meshStruct.tris(j,1:3),2),1))/2;
+    midpointsX(j,:) = (meshStruct.nodes(meshStruct.tris(j,1:3),1)+circshift(meshStruct.nodes(meshStruct.tris(j,1:3),1),1))/2;
+    midpointsY(j,:) = (meshStruct.nodes(meshStruct.tris(j,1:3),2)+circshift(meshStruct.nodes(meshStruct.tris(j,1:3),2),1))/2;
 end    
 
 

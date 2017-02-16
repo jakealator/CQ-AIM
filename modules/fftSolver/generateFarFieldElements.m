@@ -23,14 +23,15 @@
 function [centers, rectangularElements, V] = generateFarFieldElements(centroids, N, farFieldGrid)
 
 nG = length(farFieldGrid);
-centers = zeros(N,1);
+centers = zeros(N,2);
 rectangularElements = zeros(N,9);
 
 for j=1:N
     % Find the minimum L2-distance between each centroid and far field grid
     % element. This is probably a slower-than-needed method. 
-    [centers(j),I] = min(sqrt((centroids(j,1)-farFieldGrid(:,1))^2+...
-        (centroids(j,2)-farFieldGrid(:,2))^2));
+    [~,I] = min(sqrt((centroids(j,1)-farFieldGrid(:,1)).^2+...
+        (centroids(j,2)-farFieldGrid(:,2)).^2));
+    centers(j,:) = [farFieldGrid(I,1),farFieldGrid(I,2)];
     
     % Find the 9 closest grid points to centers(j). These are just the 4
     % closest components of farFieldGrid on either side. Need to be careful
@@ -52,10 +53,7 @@ end
 
 % Using the above, create the interpolation matrix V
 %%%%% This is part of the reason this only works for multipole M=2
-V = zeros(N,(2+1)^2);
-for j=1:N
-    V(j,:) = generateInterpolationMatrix(centers(j,:), rectangularElements(j,:), meshStruct);
-end
+V = generateInterpolationMatrix(centers, rectangularElements, midpointsX,midpointsY,N);
 
 
 
