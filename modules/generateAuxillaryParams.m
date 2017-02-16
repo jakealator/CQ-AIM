@@ -32,11 +32,12 @@
 % contains 4r. Spacing of grid is dictated by h and by the parameter M, the
 % multipole expansion order
 
-function [centroids, triAreas, h, iElements, jElements, multipoleMatrix, nearFieldDistances, farFieldGrid] = generateAuxillaryParams(meshStruct, N, M)
+function [centroids, midpointsX, midpointsY, triAreas, h, iElements, jElements, multipoleMatrix, nearFieldDistances, farFieldGrid] = generateAuxillaryParams(meshStruct, N, M)
 
 
     % initialize centroids
     centroids = generateCentroids(meshStruct, N);
+    [midpointsX,midpointsY] = generateMidpoints(meshStruct,N);
     
     %initialize triangle areas
     triAreas = generateTriangleAreas(meshStruct, N);

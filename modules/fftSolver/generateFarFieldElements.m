@@ -14,7 +14,7 @@
 %         V                   - nGxN matrix mapping from finite element
 %                               mesh to rectangular mesh
 %
-% Determines the artificial Cartesean support of each triangular element by
+% Determines the artificial Cartesian support of each triangular element by
 % finding the element of the rectangular grid closest to each centroid and
 % adding the nearest grid points to that element. Also generates the
 % interpolation matrix V which maps functions on a triangular element to a
@@ -51,7 +51,11 @@ for j=1:N
 end
 
 % Using the above, create the interpolation matrix V
-V = generateInterpolationMatrix(centroids, centers, rectangularElements);
+%%%%% This is part of the reason this only works for multipole M=2
+V = zeros(N,(2+1)^2);
+for j=1:N
+    V(j,:) = generateInterpolationMatrix(centers(j,:), rectangularElements(j,:), meshStruct);
+end
 
 
 

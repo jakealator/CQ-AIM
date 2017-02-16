@@ -25,7 +25,10 @@ forwardParams
 
 
 %---- Generate scattered field data ----%
-[uScattered, uScatteredHat] = generateScatteredField(centroids, triAreas, h, iElements, jElements, multipoleMatrix, nearFieldDistances);
+% Build near field components
+[iElements, jElements, multipoleMatrix] = generateNearFieldElements(N,M,hGrid,d);
+
+[uScattered, uScatteredHat] = generateScatteredField();
 
 
 

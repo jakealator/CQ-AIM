@@ -1,10 +1,10 @@
 % generateFarFieldElements.m
 % Created: 02-02-2017 by JDR at UD
-% Last Modified: 
+% Last Modified: 02-03-2017 by JDR in Newark
 %
 % Input: centroids    - Nx2 vector finite Element mesh centroids
 %        N            - Number of elements 
-%        farFieldGrid - Ngx2 vector containing the 
+%        farFieldGrid - Ngx2 vector containing the rectangular grid points
 %
 % Output: centers             - Nx2 vector of the centers of each 
 %                               expansion box, ordered
@@ -14,7 +14,7 @@
 %         V                   - nGxN matrix mapping from finite element
 %                               mesh to rectangular mesh
 %
-% Determines the artificial Cartesean support of each triangular element by
+% Determines the artificial Cartesian support of each triangular element by
 % finding the element of the rectangular grid closest to each centroid and
 % adding the nearest grid points to that element. Also generates the
 % interpolation matrix V which maps functions on a triangular element to a
@@ -49,6 +49,10 @@ for j=1:N
         rectangularElements(j,1:sizeElement) = farFieldGrid(minI:end,:);
     end
 end
+
+% Using the above, create the interpolation matrix V
+for j=1:
+V = generateInterpolationMatrix(centroids, centers, rectangularElements, meshStruct);
 
 
 
