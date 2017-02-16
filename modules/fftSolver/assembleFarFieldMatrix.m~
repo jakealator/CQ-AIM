@@ -17,19 +17,16 @@
 % Only generates elements which are needed (to cancel out equivilent
 % components in near field). 
 
-function farFieldElements = assembleFarFieldMatrix(farFieldGrid,  V, N, rectangularElements, iElements, jElements)
+function farFieldElements = assembleFarFieldMatrix(farFieldGrid,  V, N, iElements, jElements)
 
 kMax = length(nonzeros(iElements));
 
 % This breaks for overlapping elements right now!!!
 for j=1:kMax
     % build distance matrix between each expansion box element.
-    expBoxI = rectangularElements(iElements(j),:);
-    expBoxJ = rectangularElements(jElements(j),:);
-    D = sqrt(bsxfun(@plus,full(dot(expBoxI',expBoxI',1)),full(dot(expBoxJ',expBoxJ',1))')-full(2*(expBoxJ*expBoxI')));
-    sElements(j) = dot(V(iElements(j),:),...
-        fundamentalSolution(D)*V(jElements(j),:).');
-end
+    D = 
+    farFieldElements(j) = dot(V(iElements(j),:),...
+        fundamentalSolution(D)*V(
 
 farFieldElements = sparse(iElements, jElements, sElements, N,N);
 

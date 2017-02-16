@@ -33,8 +33,8 @@ elseif M==1
     
     k = 0; % tracks number of non-zero elements
     for i=1:N
-        cElement = centers(i); % pick current element to test against
-        for j=1:N % test all the other elements against cElement (note everything is an integer so == is fine)
+        cElement = centers(i,:); % pick current element to test against
+        for j=1:N % test all the other elements against cElement
             if (sqrt((cElement(1)-centers(j,1))^2+(cElement(2)-centers(j,2))^2)<d*hGrid)
                 k=k+1;
                 iElements(k) = i; % iElements keeps track of the column number
