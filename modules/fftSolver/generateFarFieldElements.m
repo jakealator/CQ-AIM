@@ -20,11 +20,12 @@
 % interpolation matrix V which maps functions on a triangular element to a
 % function on the new rectangular element. 
 
-function [centers, rectangularElements, V] = generateFarFieldElements(centroids, N, farFieldGrid)
+function [centers, rectangularElementsX, V] = generateFarFieldElements(centroids, N, farFieldGrid)
 
 nG = length(farFieldGrid);
 centers = zeros(N,2);
-rectangularElements = zeros(N,9);
+rectangularElementsX = zeros(N,9);
+rectangularElementsY = zeros(N,9);
 
 for j=1:N
     % Find the minimum L2-distance between each centroid and far field grid
@@ -41,19 +42,22 @@ for j=1:N
     minI = I-4;
     maxI = I+4;
     if (minI>1 && maxI<nG)
-        rectangularElements(j,:) = farFieldGrid(minI:maxI,:);
+        rectangularElementsX(j,:) = farFieldGrid(minI:maxI,1);
+        rectangularElementsY(j,:) = farFieldGrid(minI:maxI,2);
     elseif minI<=1
         sizeElement = length(1:maxI);
-        rectangularElements(j,1:sizeElement) = farFieldGrid(1:maxI,:);
+        rectangularElementsX(j,1:sizeElement) = farFieldGrid(1:maxI,1);
+        rectangularElementsY(j,1:sizeElement) = farFieldGrid(1:maxI,2);
     else
         sizeElement = length(minI:nG);
-        rectangularElements(j,1:sizeElement) = farFieldGrid(minI:end,:);
+        rectangularElementsX(j,1:sizeElement) = farFieldGrid(minI:end,1);
+        rectangularElementsY(j,1:sizeElement) = farFieldGrid(minI:end,2);
     end
 end
 
 % Using the above, create the interpolation matrix V
 %%%%% This is part of the reason this only works for multipole M=2
-V = generateInterpolationMatrix(centers, rectangularElements, midpointsX,midpointsY,N);
+V = generateInterpolationMatrix(centers, rectangularElementsX, rectangularElementsY, midpointsX,midpointsY,N);
 
 
 

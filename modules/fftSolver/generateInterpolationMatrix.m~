@@ -14,7 +14,7 @@
 % functions on FEM triangulation and "delta basis functions" on Cartesian
 % discretization. 
 
-function V = generateInterpolationMatrix(centers, rectangularElementsX, rectangularElementsY, midpointsX,midpointsY, triAreas, N)
+function V = generateInterpolationMatrix(centers, rectangularElements, midpointsX,midpointsY, triAreas, N)
 
 % Order of m-vector containing exponents
 mVec = [[0,0];[0,1];[0,2];[1,0];[1,1];[1,2];[2,0];[2,1];[2,2]];
@@ -31,21 +31,15 @@ for j=1:N
     % Use midpoint rule to compute righ-hand-side. This is exact for
     % polynomials up to 2nd order so is fine for M=2
     % WAIT: Does this incur error? I think it does. 
-    for k=1:9
-        b(k) = (bFun(centers(j,1),centers(j,2),mVec(k,:),midpointsX(j,1),midpointsY(j,1))+...
-            bFun(centers(j,1),centers(j,2),mVec(k,:),midpointsX(j,2),midpointsY(j,2))+...
-            bFun(centers(j,1),centers(j,2),mVec(k,:),midpointsX(j,3),midpointsY(j,3)));
+    for i=1:9
+        b(i) = (bFun(centers(j,1),centers(j,2),mVec(i,:),midpointsX(j,1),midpointsY(j,1))+...
+            bFun(centers(j,1),centers(j,2),mVec(i,:),midpointsX(j,2),midpointsY(j,2))+...
+            bFun(centers(j,1),centers(j,2),mVec(i,:),midpointsX(j,3),midpointsY(j,3)));
         
-        % Now compute (shifted) Vandermonde matrix W
-        for ell = 1:9
-            W(k,ell) = (rectangularElementsX(j,ell)-centers(j,1))^mVec(k,1)...
-                *(rectangularElementsY(j,ell)-centers(j,2))^mVec(k,2);
-        end
+        % Now compute matrix W which will
     end
     % Need |K|/3 for midpoint quadrature rule
     b = triAreas(j)/3*b;
-    
-    V = W\b;
 
 
 
