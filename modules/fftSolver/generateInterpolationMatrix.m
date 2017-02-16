@@ -20,7 +20,7 @@ function V = generateInterpolationMatrix(centers, rectangularElements, midpoints
 mVec = [[0,0];[0,1];[0,2];[1,0];[1,1];[1,2];[2,0];[2,1];[2,2]];
 
 % Use quadrature against bFun to calculate rhs
-bFun = @(x,y,m,midpointsX,midpointsY)((midpointsX-x).^m(1).*(midpointsY-y).^m(2));
+bFun = @(x,y,m,midpointsX,midpointsY)((midpointsX-x)^m(1)*(midpointsY-y)^m(2));
 
 
 % Compute V for each element/expansion cube
