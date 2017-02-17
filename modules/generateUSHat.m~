@@ -18,21 +18,16 @@
 %            2) Compute RHS
 %            3) Use CG to solve for US in D, using 1) and far field
 %               computed during iterations
-%            4) Find solution in exterior. 
-
-function usHat = generateUSHat()
+%            4) Fin
 
 
 
+function  = generateUSHat()
 
 
 
 
-end
 
-% aFarX applies operator Afar to a vector x. Output is approximation to Ax
-% evaluated back on finite element mesh through the interpolation matrix. 
-function AfarX = applyFarField()
 
 
 end
