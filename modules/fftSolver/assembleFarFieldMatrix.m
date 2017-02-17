@@ -17,11 +17,17 @@
 % Only generates elements which are needed (to cancel out equivilent
 % components in near field). 
 
-function farFieldElements = assembleFarFieldMatrix(farFieldGrid,  V, N, rectangularElements, iElements, jElements)
+function farFieldElements = assembleFarFieldMatrix(waveNumber,  V, N, rectangularElements, iElements, jElements)
 
 kMax = length(nonzeros(iElements));
 
-% This breaks for overlapping elements right now!!!
+% The fundamental solution for 2D. Note that this will output as something
+% the size of its input and if the input is zero, the output will be zero
+% up to machine precision. This is to avoid any issues with near field NaNs
+% not canceling out below. 
+fundamentalSolution=@(x)(reshape(1i/4*besselh(0,waveNumber*((x~=0).*x+(abs(x)<1E-14).*1E300)),size(x)));
+
+sElements = zeros(kMax,1);
 for j=1:kMax
     % build distance matrix between each expansion box element.
     expBoxI = rectangularElements(iElements(j),:);
