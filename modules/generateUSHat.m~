@@ -2,20 +2,16 @@
 % Created on: 02-17-2017 by JDR in Newark
 % Last Modified: 02-20-2017
 %
-% Inputs: uiHat                 - the Nx1 incident field corresponding to current
-%                                 wavenumber 
-%         triAreas              - Nx1 vector of triangle areas
-%         nearFieldDistances    - Distance matrix for near field distances
-%         i/jElements           - Vectors indicating which elements of FEM
-%                                 mesh are near field 
-%         centroids             - Nx2 vector of centroids
-%         extraFarFieldElements - Far field components which need to be
-%                                 subtracted away (same size as i/jElements)
-%         c/c0                  - speed of sound inside/ouside medium
-%         Ng                    - Number of Cartesian grid points
-%         N                     - Number of FEM grid points
-%         waveNumber            - current wavenumber
-%         P                     - NxNg interpolation matrix
+% Inputs: uiHat      - the Nx1 incident field corresponding to current
+%                      wavenumber 
+%         triAreas 
+%         nearFieldDistances
+% iElements, ...
+    jElements, centroids, extraFarFieldElements, c, c0,
+%         Ng         - Number of Cartesian grid points
+%         N          - Number of FEM grid points
+%         waveNumber - current wavenumber
+%         P          - NxNg interpolation matrix
 %
 % Outputs: usHat - Nx1 vector containing the uSHat data for a fixed
 %                  wavenumber. 
@@ -53,8 +49,6 @@ end
 % evaluated back on finite element mesh through the interpolation matrix. 
 function Ax = applyIPlusV(x,M,K,Ng,N,fftG,P)
 
-% The function apply V does the V application quickly, so we only need to
-% add in the contribution from Mx
 Ax = M*x+applyV(x,K,Ng,N,fftG, P);
 
 

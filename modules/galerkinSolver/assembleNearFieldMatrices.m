@@ -16,16 +16,15 @@
 %
 % Output: K               - "stiffness" matrix
 %         M               - "mass" matrix
-%         nearFieldMatrix - K+M
 %
 % Outputs the near field components of the AIM algorithm for computing the
 % action of the time-harmonic Lippmann-Schwinger equation on a vector. Uses
 % p=0 piecewise constant elements on each element and approximates
 % integrals on triangles with an exact formula on an equal area circle. 
 
-function [K,M,nearFieldMatrix] = assembleNearFieldMatrices(triAreas, ...
+function [K,M] = assembleNearFieldMatrices(triAreas, ...
     nearFieldDistances, iElements, jElements, centroids, ...
-    extraFarFieldElements, c,c0,s,N)
+    extraFarFieldElements, c,c0,waveNumber,N)
 
 % Contrasts at centroid points
 qj =((c0./c(centroids(:,1),centroids(:,2))).^2-ones(N,1));
@@ -38,12 +37,12 @@ MElements = zeros(length(iElements),1); % Will hold values of M (mass) matrix
 % Only calculate values where we have specified elements to be 'near field'
 for k = 1:length(iElements)
     if iElements(k)==jElements(k) % On the diagonal
-        KElements(k) = -triAreas(iElements(k))^2.*(4*1i*c0^2/s^2+(2*pi*1i*c0/s).*...
-            besselh(1,1,1i*s/c0*sqrt(triAreas(iElements(k))/pi)));
+        KElements(k) = -triAreas(iElements(k))^2.*(4*1i*c0^2/waveNumber^2+(2*pi*1i*c0/waveNumber).*...
+            besselh(1,1,1i*waveNumber/c0*sqrt(triAreas(iElements(k))/pi)));
         MElements(k) = triAreas(iElements(k))/qj(iElements(k));
     else
         KElements(k) = triAreas(iElements(k))*triAreas(jElements(k))*...
-            besselh(0,1,1i*s/c0*nearFieldDistances(iElements(k),jElements(k)));
+            besselh(0,1,1i*waveNumber/c0*nearFieldDistances(iElements(k),jElements(k)));
     end
 end
 
@@ -58,8 +57,6 @@ KElements = KElements - extraFarFieldElements;
 M = sparse(iElements,jElements,MElements,N,N);
 K = sparse(iElements,jElements,KElements,N,N);
 
-K = (1i*s^2)/(4*c0^2)*K;
-
-nearFieldMatrix = M+K;
+K = (1i*waveNumber^2)/(4*c0^2)*K;
 
 end
