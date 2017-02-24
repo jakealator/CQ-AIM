@@ -32,7 +32,7 @@
 % contains 4r. Spacing of grid is dictated by h and by the parameter M, the
 % multipole expansion order
 
-function [femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, nearFieldDistances, V] = generateAuxillaryParams(meshStruct, N, M)
+function [centroids, midpointsX, midpointsY, triAreas, h, iElements, jElements, multipoleMatrix, nearFieldDistances, farFieldGrid, centers, rectangularElementsX, rectangularElementsY, V] = generateAuxillaryParams(meshStruct, N, M)
 
 
     % initialize centroids
@@ -60,8 +60,10 @@ function [femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, near
     % Calculate distances between near field elements
     % !!!!Currently only works for M=1!!!!
     nearFieldDistances = generateNearFieldDistances(centroids, iElements, jElements, N,M);
-        
-    femStruct = struct('centroids',centroids,'midpoints',[midpointsX(:),midpointsY(:)],'triAreas',triAreas);
-    farFieldStruct = struct('farFieldGrid',farFieldGrid,'centers',centers,'rectangularElementsX',rectangularElementsX,'rectangularElementsY',rectangularElementsY,'h',h);
+    
+    centroids, midpointsX, midpointsY, triAreas, h, iElements, jElements, multipoleMatrix, nearFieldDistances, farFieldGrid, centers, rectangularElementsX, rectangularElementsY, V
+    
+    femStruct = struct('centroids',centroids,'midpoints',[midPointsX(:),midpointsY(:)],'triAreas',triAreas);
+    farFieldStruct = struct('farFieldGrid',farFieldGrid,'centers',centers,'rectangularElementsX',rectangularElementsX,'rectangularElementsY',rectangularElementsY);
 
 end

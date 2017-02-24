@@ -16,7 +16,7 @@
 % Determines how far away each mesh element is from each other element, up
 % to the user-determined multipole expansion. 
 
-function [iElements, jElements, multipoleMatrix] = generateNearFieldElements(N,M,hGrid,d)
+function [iElements, jElements, multipoleMatrix] = generateNearFieldElements(N,M,centers,hGrid,d)
 
 % If M=0, there is no near/far field distinction (mostly for testing)
 if M==0
