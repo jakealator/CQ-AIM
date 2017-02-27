@@ -16,7 +16,7 @@
 % Determines how far away each mesh element is from each other element, up
 % to the user-determined multipole expansion. 
 
-function [iElements, jElements, multipoleMatrix] = generateNearFieldElements(N,M,centers,hGrid,d)
+function [iElements, jElements, multipoleMatrix] = generateNearFieldElements(N,M,centers,h,d)
 
 % If M=0, there is no near/far field distinction (mostly for testing)
 if M==0
@@ -24,18 +24,18 @@ if M==0
     iElements = iElements(:); jElements = jElements(:); % flatten to put in correct order/size
     multipoleMatrix = ones(N,N);
     
-elseif M==1 
-    % For each center, determine which centers are within d*h units. If the jth
-    % row is close to the ith value, matrix element (i,j)=1. Otherwise (i,j)=0.
+elseif M==2
+    % For each center, determine which centers (rectangular mesh) are 
+    % within d*h units. If the jth row is close to the ith value, matrix 
+    % element (i,j)=1. Otherwise (i,j)=0.
     % Note that this is probably overly slow (O(N^2)) but is memory
     % efficient, which is more important as N grows. If desired, a quadtree
     % will reduce speed as well. 
     
     k = 0; % tracks number of non-zero elements
     for i=1:N
-        cElement = centers(i,:); % pick current element to test against
         for j=1:N % test all the other elements against cElement
-            if (sqrt((cElement(1)-centers(j,1))^2+(cElement(2)-centers(j,2))^2)<d*hGrid)
+            if (sqrt((centers(i,1)-centers(j,1))^2+(centers(i,2)-centers(j,2))^2)<d*h)
                 k=k+1;
                 iElements(k) = i; % iElements keeps track of the column number
                 jElements(k) = j; % jElements keeps track of the row number

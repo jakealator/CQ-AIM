@@ -15,7 +15,7 @@ function nearFieldDistances = generateNearFieldDistances(centroids, iElements,jE
 
 if M==0 % when M=0, treat everything as 'near field.' 
     nearFieldDistances = sqrt(bsxfun(@plus,full(dot(centroids',centroids',1)),full(dot(centroids',centroids',1))')-full(2*(centroids*centroids')));
-elseif M==1
+elseif M==2
     % Find triangles that are in the near field of each other
 %     [I,J] = ind2sub([N,N],find(multipoleMatrix));
     sElement = zeros(length(iElements),1); % Initialize array to hold distances

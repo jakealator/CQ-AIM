@@ -14,6 +14,7 @@ cd tests
 mesh = 'twoCircles';
 meshStruct = initialize_mesh(mesh,1); % Initialize mesh (always use p=1 in second argument)
 N=meshStruct.nt; % number of centroid points
-M=1;
+M=2;
+d=3;
 
-[femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, nearFieldDistances, V] = generateAuxillaryParams(meshStruct, N, M);
+[femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, nearFieldDistances, V] = generateAuxillaryParams(meshStruct, N, M, d);

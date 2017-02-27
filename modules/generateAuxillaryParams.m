@@ -32,7 +32,7 @@
 % contains 4r. Spacing of grid is dictated by h and by the parameter M, the
 % multipole expansion order
 
-function [femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, nearFieldDistances, V] = generateAuxillaryParams(meshStruct, N, M)
+function [femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, nearFieldDistances, V] = generateAuxillaryParams(meshStruct, N, M, d)
 
 
     % initialize centroids
@@ -55,7 +55,7 @@ function [femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, near
     [centers, rectangularElementsX, rectangularElementsY, V] = generateFarFieldElements(centroids, M, N, farFieldGrid, h, midpointsX,midpointsY, triAreas);
     
     %intitialize multipole matrix
-    [iElements, jElements, multipoleMatrix] = generateNearFieldElements(N,M,centers,h,3);
+    [iElements, jElements, multipoleMatrix] = generateNearFieldElements(N,M,centers,h,d);
     
     % Calculate distances between near field elements
     nearFieldDistances = generateNearFieldDistances(centroids, iElements, jElements, N,M);
