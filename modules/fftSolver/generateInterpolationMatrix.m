@@ -16,6 +16,8 @@
 
 function V = generateInterpolationMatrix(centers, rectangularElementsX, rectangularElementsY, midpointsX,midpointsY, triAreas, N)
 
+V = zeros(N,9);
+
 % Order of m-vector containing exponents
 mVec = [[0,0];[0,1];[0,2];[1,0];[1,1];[1,2];[2,0];[2,1];[2,2]];
 
@@ -45,8 +47,12 @@ for j=1:N
     % Need |K|/3 for midpoint quadrature rule
     b = triAreas(j)/3*b;
     
-    V = W\b;
+    Vsquare = W\b;
+    
+    V(j,:) = Vsquare(:);
 
 
+
+end
 
 end

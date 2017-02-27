@@ -49,19 +49,18 @@ function [femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, near
     % h/2. First find largest/smallest centroids.
     minX = min(centroids(:,1)); maxX = max(centroids(:,1));
     minY = min(centroids(:,2)); maxY = max(centroids(:,2));
-    [ffX,ffY] = meshgrid(minX-2*h:h/2:maxX+2*h, minY-2*h:h/2:maxY+2*h);
+    [ffX,ffY] = meshgrid(minX-M*h:h/M:maxX+M*h, minY-M*h:h/M:maxY+M*h);
     farFieldGrid = [ffX(:),ffY(:)]; % output is size NGx2.
     
-    [centers, rectangularElementsX, rectangularElementsY, V] = generateFarFieldElements(centroids, N, farFieldGrid);
+    [centers, rectangularElementsX, rectangularElementsY, V] = generateFarFieldElements(centroids, M, N, farFieldGrid, h, midpointsX,midpointsY, triAreas);
     
     %intitialize multipole matrix
     [iElements, jElements, multipoleMatrix] = generateNearFieldElements(N,M,centers,h,3);
     
     % Calculate distances between near field elements
-    % !!!!Currently only works for M=1!!!!
     nearFieldDistances = generateNearFieldDistances(centroids, iElements, jElements, N,M);
         
-    femStruct = struct('centroids',centroids,'midpoints',[midpointsX(:),midpointsY(:)],'triAreas',triAreas);
-    farFieldStruct = struct('farFieldGrid',farFieldGrid,'centers',centers,'rectangularElementsX',rectangularElementsX,'rectangularElementsY',rectangularElementsY,'h',h);
+    femStruct = struct('centroids',centroids,'midpoints',[midpointsX(:),midpointsY(:)],'triAreas',triAreas,'N',N);
+    farFieldStruct = struct('farFieldGrid',farFieldGrid,'centers',centers,'rectangularElementsX',rectangularElementsX,'rectangularElementsY',rectangularElementsY,'h',h,'M',M);
 
 end

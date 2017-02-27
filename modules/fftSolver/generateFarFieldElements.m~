@@ -20,8 +20,9 @@
 % interpolation matrix V which maps functions on a triangular element to a
 % function on the new rectangular element. 
 
-function [centers, rectangularElementsX, rectangularElementsY, V] = generateFarFieldElements(centroids, M, N, farFieldGrid, h, midpointsX,midpointsY, triAreas)
+function [centers, rectangularElementsX, rectangularElementsY, V] = generateFarFieldElements(centroids, N, farFieldGrid, h, midpointsX,midpointsY, triAreas)
 
+nG = length(farFieldGrid);
 centers = zeros(N,2);
 rectangularElementsX = zeros(N,9);
 rectangularElementsY = zeros(N,9);
@@ -37,8 +38,8 @@ for j=1:N
     % closest components of farFieldGrid on either side. Shouldn't need 
     % to worry about edge cases because there's a built-in buffer in the
     % grid. 
-    [rectangularElementsXSquare,rectangularElementsYSquare] = meshgrid(centers(j,1)-h/M:h/M:centers(j,1)+h/M,...
-        centers(j,2)-h/M:h/M:centers(j,2)+h/M);
+    [rectangularElementsXSquare,rectangularElementsYSquare] = meshgrid(centers(j,1)-h:h:centers(j,1)+h,...
+        centers(j,2)-h/2:h:centers(j,2)+h);
     rectangularElementsX(j,:)=rectangularElementsXSquare(:); 
     rectangularElementsY(j,:)=rectangularElementsYSquare(:);
     

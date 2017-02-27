@@ -16,4 +16,4 @@ meshStruct = initialize_mesh(mesh,1); % Initialize mesh (always use p=1 in secon
 N=meshStruct.nt; % number of centroid points
 M=1;
 
-[centroids, midpointsX, midpointsY, triAreas, h, iElements, jElements, multipoleMatrix, nearFieldDistances, farFieldGrid] = generateAuxillaryParams(meshStruct, N, M);
+[femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, nearFieldDistances, V] = generateAuxillaryParams(meshStruct, N, M);

@@ -25,44 +25,20 @@ triAreas = generateTriangleAreas(meshStruct, N);
 minX = min(centroids(:,1)); maxX = max(centroids(:,1));
 minY = min(centroids(:,2)); maxY = max(centroids(:,2));
 [ffX,ffY] = meshgrid(minX-M*h:h/M:maxX+M*h, minY-M*h:h/M:maxY+M*h);
-ffX=ffX(:);ffY=ffY(:);
-farFieldGrid = [ffX,ffY]; % output is size NGx2.
+farFieldGrid = [ffX(:),ffY(:)]; % output is size NGx2.
 
 % %% load variables from generateFarFieldElements.m %% %
 [centers, rectangularElementsX, rectangularElementsY, V] = generateFarFieldElements(centroids, M, N, farFieldGrid, h, midpointsX,midpointsY, triAreas);
 
-% Start by testing that rectangularElements (from rectangular mesh) are within M*h of 
+% Start by testing that centers (from rectangular mesh) are within M*h of 
 % their corresponding centroid (from the FEM mesh) in the 2-norm
-k=0;
+k
 for i=1:N
     for j=1:9
         if (sqrt((rectangularElementsX(i,j)-centroids(i,1))^2+(rectangularElementsY(i,j)-centroids(i,2))^2))>M*h
             error('generateFarFieldElements Test Line 13: distance between centroids and centers FAILED.')
         else
-            k=k+1;
+            k=k+1
         end
     end
 end
-if k==N*9
-    sprintf('generateFarFieldElements Test: distance between centroids and rectangular grid points PASSED.')
-end
-
-% Test that rectangularElementsX/Y are actually in the farFieldGrid. 
-k=0;
-for i=1:N
-    for j=1:9
-        Ix=find(abs(rectangularElementsX(i,j)-ffX)<1E-15);
-        Iy=find(abs(rectangularElementsY(i,j)-ffY(Ix))<1E-15);
-        if isempty(Iy)
-            error('generateFarFieldElements Test Line 55: there is an element of rectangularElements not in farFieldGrid FAILED.')
-        else
-            k=k+1;
-        end
-    end
-end
-if k==N*9
-    sprintf('generateFarFieldElements Test: distance between centroids and rectangular grid points PASSED.')
-end
-
-% V is supposed to map polynomials of order 0<mx,my<M perfectly. Test this.
-
