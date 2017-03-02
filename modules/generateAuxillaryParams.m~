@@ -6,9 +6,8 @@
 %                     locations (created by initialize_mesh.m)
 %        N          - number of elements
 %        M          - multipole expansion order (1 or 2)
-%        d          - distance defining near field/far field (integer so
-%                     that dh is the distance between square centers)
-%        uiHatFun   - function of space (centroids) defining incident field
+%        d          - 
+%        uiHatFun   -
 %        
 %
 % Output: centroids          - vector of size Nx2 giving the centroid
@@ -38,12 +37,9 @@
 function [femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, nearFieldDistances, P,flatP] = generateAuxillaryParams(meshStruct, N, M, d, uiHatFun)
 
 
-    % initialize centroids/midpoints
+    % initialize centroids
     centroids = generateCentroids(meshStruct, N);
     [midpointsX,midpointsY] = generateMidpoints(meshStruct,N);
-    
-    % Define incident field on centroids
-    uiHat = uiHatFun(centroids);
     
     %initialize triangle areas
     triAreas = generateTriangleAreas(meshStruct, N);
@@ -66,7 +62,7 @@ function [femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, near
     % Calculate distances between near field elements
     nearFieldDistances = generateNearFieldDistances(centroids, iElements, jElements, N,M);
         
-    femStruct = struct('centroids',centroids,'midpointsX',midpointsX, 'midpointsY',midpointsY,'triAreas',triAreas,'N',N, 'uiHat', uiHat);
-    farFieldStruct = struct('farFieldGrid',farFieldGrid,'centers',centers,'rectangularElementsX',rectangularElementsX,'rectangularElementsY',rectangularElementsY,'h',h,'M',M, 'nG', length(farFieldGrid));
+    femStruct = struct('centroids',centroids,'midpointsX',midpointsX, 'midpointsY',midpointsY,'triAreas',triAreas,'N',N);
+    farFieldStruct = struct('farFieldGrid',farFieldGrid,'centers',centers,'rectangularElementsX',rectangularElementsX,'rectangularElementsY',rectangularElementsY,'h',h,'M',M);
 
 end

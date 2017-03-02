@@ -12,8 +12,10 @@
 %---- User Editable Parameters ----%
 c0 = 1; % Speed of sound in free space (default=1)
 c=@(x,y)(sqrt(2)); % Speed of sound in inhomogeneity (should be either 0<c<1 or 1<c<2 in general)
-mesh = 'twoCircles'; % name of mesh file (see ./modules/meshes for names)
-s = 1i; % frequency (only for testing time-harmonic)
+mesh = 'circle'; % name of mesh file (see ./modules/meshes for names)
+waveNumber = 1i; % frequency (only for testing time-harmonic)
+incD = [0,1];
+uiHatFun = @(x)exp(waveNumber*(incD(1)*x(:,1)+incD(2)*x(:,2)));
 %----------------------------------%
 
 
@@ -24,5 +26,6 @@ meshStruct = initialize_mesh(mesh,1); % Initialize mesh (always use p=1 in secon
 N=meshStruct.nt; % number of centroid points
 
 % Far field parameters
-M = 1; % Multipole expansion parameter
+M = 2; % Multipole expansion parameter
+d = 3; % Near field distance parameter
 %-----------------------------%

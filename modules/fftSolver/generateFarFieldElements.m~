@@ -20,7 +20,7 @@
 % interpolation matrix V which maps functions on a triangular element to a
 % function on the new rectangular element. 
 
-function [centers, rectangularElementsX, rectangularElementsY, P,flatP] = generateFarFieldElements(centroids, M, N, farFieldGrid, h, midpointsX,midpointsY, triAreas)
+function [centers, rectangularElementsX, rectangularElementsY, V] = generateFarFieldElements(centroids, M, N, farFieldGrid, h, midpointsX,midpointsY, triAreas)
 
 centers = zeros(N,2);
 rectangularElementsX = zeros(N,9);
@@ -68,9 +68,8 @@ end
 % rectangularLocations. 
 flatP = generateInterpolationMatrix(centers, rectangularElementsX, rectangularElementsY, midpointsX,midpointsY, triAreas, N);
 
-femIndex = repmat(1:N,9,1);
-femIndex = femIndex(:);
-P = sparse(rectangularLocations(:),femIndex,flatP,nG,N);
+femIndex = 
+P = sparse(rectangularLocations(:)
 
 
 end

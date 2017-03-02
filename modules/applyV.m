@@ -16,30 +16,27 @@
 % version of the Lippmann-Schwinger integral operator. Note that this does
 % NOT apply the identity matrix component of the operator! 
 
-function Vx = applyV(x,K,Ng,N,fftG, P)
+function Vx = applyV(x,K,N,fftG, P)
 
 % %% Begin by computing Vfar*x
 
 % Interpolate x onto Cartesian grid as xhat
 % !!!! Check: !!!! Why are we not just matrix multiplying? The order of P
 % is strange, but it might not matter? 
-xhat = zeros(Ng,1);
-for j=1:Ng
-    xhat(j) = dot(P(:,j),x);
-end
+Ng = length(fftG);
+xhat = P*x;
+
 
 % Do the convolution with ffts. 
 % BIG TODO!!!
 % !!!! Note: !!!! Need to do this in a way that doesn't screw up the
 % aliasing. Look at CQ code for the correct way. 
-yhat = ifft2(Gfft*fft2(xhat));
+yhat = ifft2(fftG*fft2(xhat));
 
 % Interpolate convolution operator back onto FEM grid
 % y is now Vfarx. 
-y = zeros(N,1);
-for j=1:N
-    y(j) = P(j,:)*yhat;
-end
+y = P'*yhat;
+
 
 % Now add in the near field components. 
 Vx = K*x+y;

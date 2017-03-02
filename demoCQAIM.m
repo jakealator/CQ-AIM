@@ -21,16 +21,19 @@ addpath(genpath('modules')) % Contains the programs which actually compute
 
 %---- Initialize parameters ----%
 forwardParams
-[centroids, triAreas, h, iElements, jElements, multipoleMatrix, nearFieldDistances] = generateAuxillaryParams(meshStruct, N, M);
+[femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, nearFieldDistances, P,flatP] = generateAuxillaryParams(meshStruct, N, M, d, uiHatFun);
 
 
 %---- Generate scattered field data ----%
-[uScattered, uScatteredHat] = generateScatteredField(centroids, triAreas, h, iElements, jElements, multipoleMatrix, nearFieldDistances);
-
+extraFarFieldElements = assembleFarFieldMatrix(waveNumber,  flatP, N, ...
+    farFieldStruct.rectangularElementsX, farFieldStruct.rectangularElementsY, ...
+    iElements, jElements);
+uScatteredHat = generateUSHat(femStruct.uiHat, femStruct.triAreas, nearFieldDistances, iElements, ...
+    jElements, femStruct.centroids, extraFarFieldElements, c, c0, farFieldStruct.nG,N,waveNumber,P, farFieldStruct.farFieldGrid);
 
 
 %---- Plot results ----%
-
+pltsln(meshStruct,femStruct.centroids,real(uScatteredHat))
 
 
 
