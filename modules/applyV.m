@@ -39,7 +39,7 @@ function Vx = applyV(x,K,N,fftG, P, waveNumber, c0, farFieldStruct)
 % % Interpolate convolution operator back onto FEM grid
 % % y is now Vfarx.
 % y = P'*yhat;
-y = generateFullFarFieldMatrix(x,farFieldStruct,P, waveNumber);
+y = fftG*x; %generateFullFarFieldMatrix(x,farFieldStruct,P, waveNumber);
 
 
 % Now add in the near field components. 

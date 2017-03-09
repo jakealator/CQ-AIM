@@ -33,12 +33,13 @@ extraFarFieldElements = assembleFarFieldMatrix(waveNumber,  flatP, N, ...
     farFieldStruct.rectangularElementsX, farFieldStruct.rectangularElementsY, ...
     iElements, jElements);
 uScatteredHat = generateUSHat(femStruct.uiHat, femStruct.triAreas, nearFieldDistances, iElements, ...
-    jElements, femStruct.centroids, extraFarFieldElements, c, c0, farFieldStruct.nG,N,waveNumber,P, farFieldStruct.farFieldGrid, farFieldStruct);
+    jElements, femStruct.centroids, extraFarFieldElements, c, c0, farFieldStruct.nG,N,waveNumber,flatP, P, farFieldStruct.farFieldGrid, farFieldStruct);
+qc = (1./(c(femStruct.centroids).^2)-1); uScatteredHat = 1./qc*uScatteredHat;
 
 
 %---- Plot results ----%
 figure
-pltsln(meshStruct,femStruct.centroids,-real(uScatteredHat))
+pltsln(meshStruct,femStruct.centroids,-real(1/(2*waveNumber)*uScatteredHat))
 
 toc
 

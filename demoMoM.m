@@ -14,7 +14,7 @@
 % Chapter 5 of my Ph.D thesis.
 
 %------ Begin Demo ------%
-clear
+
 tic
 
 % Add required folders 
@@ -31,19 +31,19 @@ forwardParams
 X = femStruct.centroids;
 nearFieldDistances = sqrt(bsxfun(@plus,full(dot(X',X',1)),full(dot(X',X',1))')-full(2*(X*X')));
 
-extraFarFieldElements = waveNumber^2*assembleFarFieldMatrix(waveNumber,  flatP, N, ...
-    farFieldStruct.rectangularElementsX, farFieldStruct.rectangularElementsY, ...
-    iElements, jElements);
+% extraFarFieldElements = waveNumber^2*assembleFarFieldMatrix(waveNumber,  flatP, N, ...
+%     farFieldStruct.rectangularElementsX, farFieldStruct.rectangularElementsY, ...
+%     iElements, jElements);
 
 [KMat,MMat] = assembleNearFieldMatrices(femStruct.triAreas, nearFieldDistances, ...
     iElements, jElements, femStruct.centroids, zeros(N,N), c,c0,waveNumber,N);
 
-uScatteredHat = (KMat+MMat)\(-(KMat)*((1./c(femStruct.centroids).^2-1).*femStruct.uiHat));
+uScatteredHatMoM = (KMat+MMat)\(-(KMat)*((1./c(femStruct.centroids).^2-1).*femStruct.uiHat));
 
 
 %---- Plot results ----%
 figure
-pltsln(meshStruct,femStruct.centroids,real(uScatteredHat))
+pltsln(meshStruct,femStruct.centroids,real(uScatteredHatMoM))
 
 toc
 

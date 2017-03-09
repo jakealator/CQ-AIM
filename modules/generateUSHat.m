@@ -35,7 +35,7 @@
 %            4) Find solution in exterior. 
 
 function usHat = generateUSHat(uiHat,triAreas, nearFieldDistances, iElements, ...
-    jElements, centroids, extraFarFieldElements, c, c0, Ng,N,waveNumber,P, X, farFieldStruct)
+    jElements, centroids, extraFarFieldElements, c, c0, Ng,N,waveNumber,flatP,P, X, farFieldStruct)
 
 % First compute near field components 
 [KMat,MMat] = assembleNearFieldMatrices(triAreas, nearFieldDistances, ...
@@ -48,7 +48,7 @@ function usHat = generateUSHat(uiHat,triAreas, nearFieldDistances, iElements, ..
 %fftG = fft2(Gd);
 % % zero pad
 %fftG = [zeros(length(fftG), 2*length(fftG)); fftG, zeros(length(fftG))];
- fftG = 0;
+ fftG = generateFullFarFieldMatrix(zeros(N,1),farFieldStruct,flatP, waveNumber);
 
 
 

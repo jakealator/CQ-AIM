@@ -10,7 +10,7 @@
 % grid. Later this will be used as a test function, but currently just to
 % to compute far field to make sure rest of AIM is working. 
 
-function AFar =  generateFullFarFieldMatrix(x,farFieldStruct,flatP, waveNumber)
+function AFarx =  generateFullFarFieldMatrix(x,farFieldStruct,P, waveNumber)
 
 % The fundamental solution for 2D. Note that this will output as something
 % the size of its input and if the input is zero, the output will be zero
@@ -30,19 +30,8 @@ N = length(x);
 %         end
 %     end
 
-AFar = zeros(N,N);
-rectangularElementsX = farFieldStruct.rectangularElementsX;
-rectangularElementsY = farFieldStruct.rectangularElementsY;
-
 for i=1:N
-    for j=1:N
-        expBoxI = [rectangularElementsX(i,:)',rectangularElementsY(i,:)'];
-        expBoxJ = [rectangularElementsX(j,:)',rectangularElementsY(j,:)'];
-        D = sqrt(bsxfun(@plus,full(dot(expBoxI',expBoxI',1)),full(dot(expBoxJ',expBoxJ',1))')-full(2*(expBoxJ*expBoxI')));
-        AFar(i,j) = dot(flatP(i,:),...
-        fundamentalSolution(D)*flatP(j,:).');
-    end
-end
+    for j=
 
 
 end
