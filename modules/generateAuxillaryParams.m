@@ -61,7 +61,7 @@ function [femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, near
     [centers, rectangularElementsX, rectangularElementsY, P,flatP] = generateFarFieldElements(centroids, M, N, farFieldGrid, h, midpointsX,midpointsY, triAreas);
     
     %intitialize multipole matrix
-    [iElements, jElements, multipoleMatrix] = generateNearFieldElements(N,M,centers,h,d);
+    [iElements, jElements, multipoleMatrix] = generateNearFieldElements(N,M,rectangularElementsX,rectangularElementsY,h,d);
     
     % Calculate distances between near field elements
     nearFieldDistances = generateNearFieldDistances(centroids, iElements, jElements, N,M);

@@ -1,8 +1,8 @@
-% demoCQAIM.m 
-% Created: 01-26-2016 by JDR in Newark
+% demoMoM.m 
+% Created: 03-02-2017 by JDR in Newark
 % Last Modified: 
 %
-% Runs a demo of the convolution quadrature-adaptive integral method scheme
+% Runs a demo of the convolution quadrature-method of moments scheme
 % to simulate acoustic wave propagation through an inhomogeneous medium.
 % The geometry, numerical, and physical parameters are set in the files 
 % called fowardParams.m and scatteringParams.m in ./demo. 
@@ -15,32 +15,38 @@
 
 %------ Begin Demo ------%
 clear
-
-
+tic
 
 % Add required folders 
 addpath(genpath('demo')) % Contains physical, geometric, and computational parameters for demo
 addpath(genpath('modules')) % Contains the programs which actually compute
 
-%---- Initialize parameters ----
-%
+%---- Initialize parameters ----%
 forwardParams
-[femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, nearFieldDistances, P,flatP] = generateAuxillaryParams(meshStruct, N, M, d, uiHatFun);
+[femStruct, farFieldStruct, ~, ~, ~, ~, ~,flatP] = generateAuxillaryParams(meshStruct, N, M, d, uiHatFun);
+[iElements, jElements, multipoleMatrix] = generateNearFieldElements(N,0,0,0,0);
 
-tic
+
 %---- Generate scattered field data ----%
-extraFarFieldElements = assembleFarFieldMatrix(waveNumber,  flatP, N, ...
+X = femStruct.centroids;
+nearFieldDistances = sqrt(bsxfun(@plus,full(dot(X',X',1)),full(dot(X',X',1))')-full(2*(X*X')));
+
+extraFarFieldElements = waveNumber^2*assembleFarFieldMatrix(waveNumber,  flatP, N, ...
     farFieldStruct.rectangularElementsX, farFieldStruct.rectangularElementsY, ...
     iElements, jElements);
-uScatteredHat = generateUSHat(femStruct.uiHat, femStruct.triAreas, nearFieldDistances, iElements, ...
-    jElements, femStruct.centroids, extraFarFieldElements, c, c0, farFieldStruct.nG,N,waveNumber,P, farFieldStruct.farFieldGrid, farFieldStruct);
+
+[KMat,MMat] = assembleNearFieldMatrices(femStruct.triAreas, nearFieldDistances, ...
+    iElements, jElements, femStruct.centroids, zeros(N,N), c,c0,waveNumber,N);
+
+uScatteredHat = (KMat+MMat)\(-(KMat)*((1./c(femStruct.centroids).^2-1).*femStruct.uiHat));
 
 
 %---- Plot results ----%
 figure
-pltsln(meshStruct,femStruct.centroids,-real(uScatteredHat))
+pltsln(meshStruct,femStruct.centroids,real(uScatteredHat))
 
 toc
+
 
 
 %------ End Demo ------%

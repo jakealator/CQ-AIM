@@ -35,35 +35,38 @@
 %            4) Find solution in exterior. 
 
 function usHat = generateUSHat(uiHat,triAreas, nearFieldDistances, iElements, ...
-    jElements, centroids, extraFarFieldElements, c, c0, Ng,N,waveNumber,P, X)
+    jElements, centroids, extraFarFieldElements, c, c0, Ng,N,waveNumber,P, X, farFieldStruct)
 
 % First compute near field components 
 [KMat,MMat] = assembleNearFieldMatrices(triAreas, nearFieldDistances, ...
     iElements, jElements, centroids, extraFarFieldElements, c,c0,waveNumber,N);
 
 % Add in fft of Green's function at rectangular points
-fundamentalSolution=@(x)(reshape(1i/4*besselh(0,1i*waveNumber*((x~=0).*x+(abs(x)<1E-14).*1E300)),size(x)));
-D = sqrt(bsxfun(@plus,full(dot(X',X',1)),full(dot(X',X',1))')-full(2*(X*X')));
-Gd = fundamentalSolution(D);
-fftG = fft2(Gd);
+%fundamentalSolution=@(x)(reshape(1i/4*besselh(0,1,1i*waveNumber*((x~=0).*x+(abs(x)<1E-14).*1E300)),size(x)));
+%D = sqrt(bsxfun(@plus,full(dot(X',X',1)),full(dot(X',X',1))')-full(2*(X*X')));
+%Gd = fundamentalSolution(D);
+%fftG = fft2(Gd);
+% % zero pad
+%fftG = [zeros(length(fftG), 2*length(fftG)); fftG, zeros(length(fftG))];
+ fftG = 0;
 
 
 
 % All we need to do now is compute the rhs and then use conjugate gradient to
 % solve (I+V)x = rhs. 
-rhs = applyV(uiHat,KMat,N,fftG,P);
-usHat = cgs(@(x)applyIPlusV(x,MMat,KMat,N,fftG,P),rhs,1E-2);
+rhs = -waveNumber*applyV((1./c(centroids).^2-1).*uiHat,KMat,N,fftG,P, waveNumber, c0, farFieldStruct);
+usHat = cgs(@(x)applyIPlusV(x,MMat,KMat,N,fftG,P, waveNumber, c0, farFieldStruct),rhs,1E-3);
 
 
 end
 
 % aFarX applies operator Afar to a vector x. Output is approximation to Ax
 % evaluated back on finite element mesh through the interpolation matrix. 
-function Ax = applyIPlusV(x,M,K,N,fftG,P)
+function Ax = applyIPlusV(x,M,K,N,fftG,P, waveNumber, c0, farFieldStruct)
 
 % The function apply V does the V application quickly, so we only need to
 % add in the contribution from Mx
-Ax = M*x+applyV(x,K,N,fftG, P);
+Ax = M*x+applyV(x,K,N,fftG, P, waveNumber, c0, farFieldStruct);
 
 
 

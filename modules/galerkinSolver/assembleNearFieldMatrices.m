@@ -53,8 +53,8 @@ M = sparse(iElements,jElements,MElements,N,N);
 % Subtract off the extra far field contributions to prevent double counting
 % in the near field (order is the same as KElements because i/jElements are
 % used to order both.     
-K = sparse(iElements,jElements,KElements,N,N)-extraFarFieldElements;
+K = sparse(iElements,jElements,KElements,N,N);
 
-K = (1i*waveNumber^2)/(4*c0^2)*K;
+K = (1i*waveNumber^2)/(4*c0^2)*K-waveNumber^2*extraFarFieldElements;
 
 end

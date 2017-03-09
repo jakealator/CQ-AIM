@@ -16,7 +16,7 @@
 % Determines how far away each mesh element is from each other element, up
 % to the user-determined multipole expansion. 
 
-function [iElements, jElements, multipoleMatrix] = generateNearFieldElements(N,M,centers,h,d)
+function [iElements, jElements, multipoleMatrix] = generateNearFieldElements(N,M,rectangularElementsX,rectangularElementsY,h,d)
 
 % If M=0, there is no near/far field distinction (mostly for testing)
 if M==0
@@ -34,8 +34,8 @@ elseif M==2
     
     k = 0; % tracks number of non-zero elements
     for i=1:N
-        for j=1:N % test all the other elements against cElement
-            if (sqrt((centers(i,1)-centers(j,1))^2+(centers(i,2)-centers(j,2))^2)<d*h)
+        for j=1:N 
+            if (cubeDistance(rectangularElementsX(i,:),rectangularElementsY(i,:), rectangularElementsX(j,:),rectangularElementsY(j,:) )<d*h)
                 k=k+1;
                 iElements(k) = i; % iElements keeps track of the column number
                 jElements(k) = j; % jElements keeps track of the row number
