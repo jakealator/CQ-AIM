@@ -35,27 +35,26 @@
 %            4) Find solution in exterior. 
 
 function usHat = generateUSHat(uiHat,triAreas, nearFieldDistances, iElements, ...
-    jElements, centroids, extraFarFieldElements, c, c0, Ng,N,waveNumber,flatP,P, X, farFieldStruct)
+    jElements, centroids, extraFarFieldElements, c, c0, Ng,N,waveNumber,flatP,P, GD, farFieldStruct)
 
 % First compute near field components 
 [KMat,MMat] = assembleNearFieldMatrices(triAreas, nearFieldDistances, ...
     iElements, jElements, centroids, extraFarFieldElements, c,c0,waveNumber,N);
 
 % Add in fft of Green's function at rectangular points
-%fundamentalSolution=@(x)(reshape(1i/4*besselh(0,1,1i*waveNumber*((x~=0).*x+(abs(x)<1E-14).*1E300)),size(x)));
-%D = sqrt(bsxfun(@plus,full(dot(X',X',1)),full(dot(X',X',1))')-full(2*(X*X')));
-%Gd = fundamentalSolution(D);
-%fftG = fft2(Gd);
+% GdLong = [Gd; zeros(length(Gd),1)];
+% fftG = fft(GdLong);
 % % zero pad
-%fftG = [zeros(length(fftG), 2*length(fftG)); fftG, zeros(length(fftG))];
- fftG = generateFullFarFieldMatrix(zeros(N,1),farFieldStruct,flatP, waveNumber);
+GdLong = [zeros(length(GD), 2*length(GD)); GD, zeros(length(GD))];
+fftG = fft2(GdLong);
+%  fftG = generateFullFarFieldMatrix(zeros(N,1),farFieldStruct,flatP, waveNumber);
 
 
 
 % All we need to do now is compute the rhs and then use conjugate gradient to
 % solve (I+V)x = rhs. 
 rhs = -waveNumber*applyV((1./c(centroids).^2-1).*uiHat,KMat,N,fftG,P, waveNumber, c0, farFieldStruct);
-usHat = cgs(@(x)applyIPlusV(x,MMat,KMat,N,fftG,P, waveNumber, c0, farFieldStruct),rhs,1E-3);
+usHat = cgs(@(x)applyIPlusV(x,MMat,KMat,N,fftG,P, waveNumber, c0, farFieldStruct),rhs,1E-4);
 
 
 end

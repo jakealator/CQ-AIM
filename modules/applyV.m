@@ -23,23 +23,23 @@ function Vx = applyV(x,K,N,fftG, P, waveNumber, c0, farFieldStruct)
 % % Interpolate x onto Cartesian grid as xhat
 % % !!!! Check: !!!! Why are we not just matrix multiplying? The order of P
 % % is strange, but it might not matter? 
-% Ng = length(fftG);
-% xhat = P*x;
+Ng = length(fftG);
+xhat = P*x;
 % 
 % 
 % % Do the convolution with ffts. 
 % % BIG TODO!!!
 % % !!!! Note: !!!! Need to do this in a way that doesn't screw up the
 % % aliasing. Look at CQ code for the correct way. 
-% xhatLong = [xhat; zeros(length(xhat),1)];
-% yhatLong = ifft2(fftG*fft2(xhatLong));
-% size(yhatLong)
-% yhat = yhatLong(1:Ng/2);
+xhatLong = [xhat; zeros(length(xhat),1)];
+
+yhatLong = ifft2(fftG*fft2(xhatLong));
+yhat = yhatLong(1:Ng/2);
 % 
 % % Interpolate convolution operator back onto FEM grid
 % % y is now Vfarx.
-% y = P'*yhat;
-y = fftG*x; %generateFullFarFieldMatrix(x,farFieldStruct,P, waveNumber);
+y = P'*yhat;
+% y = fftG*x; 
 
 
 % Now add in the near field components. 

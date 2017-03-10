@@ -1,6 +1,5 @@
 % demoCQAIM.m 
 % Created: 01-26-2016 by JDR in Newark
-% Last Modified: 
 %
 % Runs a demo of the convolution quadrature-adaptive integral method scheme
 % to simulate acoustic wave propagation through an inhomogeneous medium.
@@ -22,24 +21,27 @@ clear
 addpath(genpath('demo')) % Contains physical, geometric, and computational parameters for demo
 addpath(genpath('modules')) % Contains the programs which actually compute
 
-%---- Initialize parameters ----
-%
+%----Initialize parameters ----%
 forwardParams
 [femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, nearFieldDistances, P,flatP] = generateAuxillaryParams(meshStruct, N, M, d, uiHatFun);
 
 tic
 %---- Generate scattered field data ----%
+GD = applyFundamentalSolution(waveNumber, farFieldStruct.farFieldGrid);
+
 extraFarFieldElements = assembleFarFieldMatrix(waveNumber,  flatP, N, ...
     farFieldStruct.rectangularElementsX, farFieldStruct.rectangularElementsY, ...
-    iElements, jElements);
+    iElements, jElements, farFieldStruct.rectangularLocations, GD);
+
+
 uScatteredHat = generateUSHat(femStruct.uiHat, femStruct.triAreas, nearFieldDistances, iElements, ...
-    jElements, femStruct.centroids, extraFarFieldElements, c, c0, farFieldStruct.nG,N,waveNumber,flatP, P, farFieldStruct.farFieldGrid, farFieldStruct);
+    jElements, femStruct.centroids, extraFarFieldElements, c, c0, farFieldStruct.nG,N,waveNumber,flatP, P, GD, farFieldStruct);
 qc = (1./(c(femStruct.centroids).^2)-1); uScatteredHat = 1./qc*uScatteredHat;
 
 
 %---- Plot results ----%
 figure
-pltsln(meshStruct,femStruct.centroids,-real(1/(2*waveNumber)*uScatteredHat))
+pltsln(meshStruct,femStruct.centroids,-real(1/(waveNumber)*uScatteredHat))
 
 toc
 

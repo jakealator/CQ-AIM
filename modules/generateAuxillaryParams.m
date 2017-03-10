@@ -49,16 +49,16 @@ function [femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, near
     triAreas = generateTriangleAreas(meshStruct, N);
     
     % spatial discretization parameter h
-    h = 20*mesh_size(meshStruct);
+    h = mesh_size(meshStruct);
     
     %Generate a Cartesean grid containing D and a little extra with spacing
     % h/2. First find largest/smallest centroids.
     minX = min(centroids(:,1)); maxX = max(centroids(:,1));
     minY = min(centroids(:,2)); maxY = max(centroids(:,2));
-    [ffX,ffY] = meshgrid(minX-M*h:h/M:maxX+M*h, minY-M*h:h/M:maxY+M*h);
+    [ffX,ffY] = meshgrid(minX-h:h/M:maxX+h, minY-h:h/M:maxY+h);
     farFieldGrid = [ffX(:),ffY(:)]; % output is size NGx2.
     
-    [centers, rectangularElementsX, rectangularElementsY, P,flatP] = generateFarFieldElements(centroids, M, N, farFieldGrid, h, midpointsX,midpointsY, triAreas);
+    [centers, rectangularElementsX, rectangularElementsY, rectangularLocations, P,flatP] = generateFarFieldElements(centroids, M, N, farFieldGrid, h, midpointsX,midpointsY, triAreas);
     
     %intitialize multipole matrix
     [iElements, jElements, multipoleMatrix] = generateNearFieldElements(N,M,rectangularElementsX,rectangularElementsY,h,d);
@@ -67,6 +67,9 @@ function [femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, near
     nearFieldDistances = generateNearFieldDistances(centroids, iElements, jElements, N,M);
         
     femStruct = struct('centroids',centroids,'midpointsX',midpointsX, 'midpointsY',midpointsY,'triAreas',triAreas,'N',N, 'uiHat', uiHat);
-    farFieldStruct = struct('farFieldGrid',farFieldGrid,'centers',centers,'rectangularElementsX',rectangularElementsX,'rectangularElementsY',rectangularElementsY,'h',h,'M',M, 'nG', length(farFieldGrid));
+    farFieldStruct = struct('farFieldGrid',farFieldGrid,'centers',centers,...
+        'rectangularElementsX',rectangularElementsX,'rectangularElementsY',...
+        rectangularElementsY, 'rectangularLocations', rectangularLocations,...
+        'h',h,'M',M, 'nG', length(farFieldGrid));
 
 end

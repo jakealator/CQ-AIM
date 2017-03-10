@@ -15,7 +15,6 @@
 
 %------ Begin Demo ------%
 
-tic
 
 % Add required folders 
 addpath(genpath('demo')) % Contains physical, geometric, and computational parameters for demo
@@ -34,6 +33,8 @@ nearFieldDistances = sqrt(bsxfun(@plus,full(dot(X',X',1)),full(dot(X',X',1))')-f
 % extraFarFieldElements = waveNumber^2*assembleFarFieldMatrix(waveNumber,  flatP, N, ...
 %     farFieldStruct.rectangularElementsX, farFieldStruct.rectangularElementsY, ...
 %     iElements, jElements);
+
+tic
 
 [KMat,MMat] = assembleNearFieldMatrices(femStruct.triAreas, nearFieldDistances, ...
     iElements, jElements, femStruct.centroids, zeros(N,N), c,c0,waveNumber,N);
