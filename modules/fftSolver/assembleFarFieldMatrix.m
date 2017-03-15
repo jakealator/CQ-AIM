@@ -38,7 +38,7 @@ for j=1:kMax
     %expBoxI = [rectangularElementsX(iElements(j),:)',rectangularElementsY(iElements(j),:)'];
     %expBoxJ = [rectangularElementsX(jElements(j),:)',rectangularElementsY(jElements(j),:)'];
     %D = sqrt(bsxfun(@plus,full(dot(expBoxI',expBoxI',1)),full(dot(expBoxJ',expBoxJ',1))')-full(2*(expBoxJ*expBoxI')));
-    GDCurrent = GD(rectangularLocations(iElements(j)), rectangularLocations(jElements(j)));
+    GDCurrent = GD(rectangularLocations(iElements(j),:), rectangularLocations(jElements(j),:));
     sElements(j) = flatP(iElements(j),:)*...
         (GDCurrent*flatP(jElements(j),:).');
 end

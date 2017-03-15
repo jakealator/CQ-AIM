@@ -45,7 +45,7 @@ function usHat = generateUSHat(uiHat,triAreas, nearFieldDistances, iElements, ..
 % GdLong = [Gd; zeros(length(Gd),1)];
 % fftG = fft(GdLong);
 % % zero pad
-GdLong = [zeros(length(GD), 2*length(GD)); GD, zeros(length(GD))];
+GdLong = [GD, zeros(length(GD)); zeros(length(GD), 2*length(GD))];
 fftG = fft2(GdLong);
 %  fftG = generateFullFarFieldMatrix(zeros(N,1),farFieldStruct,flatP, waveNumber);
 

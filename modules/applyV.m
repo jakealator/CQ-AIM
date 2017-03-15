@@ -31,6 +31,14 @@ xhat = P*x;
 % % BIG TODO!!!
 % % !!!! Note: !!!! Need to do this in a way that doesn't screw up the
 % % aliasing. Look at CQ code for the correct way. 
+% TO DO THIS RIGHT:
+% 1) Embed fftG into a circulant-block circulant matrix according to 
+% http://www.netlib.org/utk/people/JackDongarra/etemplates/node384.html
+% 2) Using an FFT2 to perform the matrix multiplication
+% 3) Only take the first half of the resulting matrix. 
+% Note that this should only require a matrix of size nGx(2nG^2) rather
+% than one of size nG^2xnG^2 to be stored in memory. 
+
 xhatLong = [xhat; zeros(length(xhat),1)];
 
 yhatLong = ifft2(fftG*fft2(xhatLong));
