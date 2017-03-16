@@ -13,7 +13,7 @@
 c0 = 1; % Speed of sound in free space (default=1)
 c=@(x,y)(sqrt(2)); % Speed of sound in inhomogeneity (should be either 0<c<1 or 1<c<2 in general)
 mesh = 'circle'; % name of mesh file (see ./modules/meshes for names)
-waveNumber = 2i; % frequency (only for testing time-harmonic)
+waveNumber = 1i; % frequency (only for testing time-harmonic)
 incD = [0,1];
 uiHatFun = @(x)exp(waveNumber*(incD(1)*x(:,1)+incD(2)*x(:,2)));
 %----------------------------------%

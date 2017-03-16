@@ -15,6 +15,12 @@
 %------ Begin Demo ------%
 clear
 
+% NOTE TO SELF:
+% 1) Something is wrong with creation of P
+% 2) the FFT routine calculates matrix-vector multiplication correctly
+% 3) In the calculation of extraFarFieldElements, we need to be sure to
+% calculate D quickly. 
+% 4) Look for TODOs in code!
 
 
 % Add required folders 
@@ -35,7 +41,7 @@ extraFarFieldElements = assembleFarFieldMatrix(waveNumber,  flatP, N, ...
 
 
 uScatteredHat = generateUSHat(femStruct.uiHat, femStruct.triAreas, nearFieldDistances, iElements, ...
-    jElements, femStruct.centroids, extraFarFieldElements, c, c0, farFieldStruct.nG,N,waveNumber,flatP, P, flatGD, farFieldStruct);
+jElements, femStruct.centroids, extraFarFieldElements, c, c0, farFieldStruct.nG,N,waveNumber, P, flatGD, farFieldStruct);
 qc = (1./(c(femStruct.centroids).^2)-1); uScatteredHat = 1./qc*uScatteredHat;
 
 
@@ -44,7 +50,7 @@ toc
 
 %---- Plot results ----%
 figure
-pltsln(meshStruct,femStruct.centroids,-imag(uScatteredHat))
+pltsln(meshStruct,femStruct.centroids,-imag(1/(2*waveNumber)*uScatteredHat))
 
 
 %------ End Demo ------%

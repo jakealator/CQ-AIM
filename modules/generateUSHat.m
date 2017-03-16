@@ -35,7 +35,7 @@
 %            4) Find solution in exterior. 
 
 function usHat = generateUSHat(uiHat,triAreas, nearFieldDistances, iElements, ...
-    jElements, centroids, extraFarFieldElements, c, c0, Ng,N,waveNumber,flatP,P, flatGD, farFieldStruct)
+    jElements, centroids, extraFarFieldElements, c, c0, Ng,N,waveNumber,P, flatGD, farFieldStruct)
 
 % First compute near field components 
 [KMat,MMat] = assembleNearFieldMatrices(triAreas, nearFieldDistances, ...
@@ -47,7 +47,8 @@ fftG = fft2(reshape(flatGD, 2*sqrt(Ng), 2*sqrt(Ng)));
 % All we need to do now is compute the rhs and then use conjugate gradient to
 % solve (I+V)x = rhs. 
 rhs = -waveNumber*applyV((1./c(centroids).^2-1).*uiHat,KMat,N,fftG,P, waveNumber, c0, farFieldStruct);
-usHat = cgs(@(x)applyIPlusV(x,MMat,KMat,N,fftG,P, waveNumber, c0, farFieldStruct),rhs,1E-4);
+size(rhs)
+usHat = cgs(@(x)applyIPlusV(x,MMat,KMat,N,fftG,P, waveNumber, c0, farFieldStruct),rhs,1E-3);
 
 
 end

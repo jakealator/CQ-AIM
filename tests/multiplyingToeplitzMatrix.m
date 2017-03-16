@@ -43,29 +43,32 @@ Ax1=A*xVec(:);
 Ax(:)-Ax1(:)
 
 % Block toeplitz via embedding: 
-N=3;
+N=20;
 x = linspace(0,1,N)'; y=x;
 [X,Y]=meshgrid(x,y);
 X = [X(:), Y(:)];
-D = sqrt(bsxfun(@plus,dot(X',X',1),dot(X',X',1)')-(2*(X*X')));
+D = real(sqrt(bsxfun(@plus,dot(X',X',1),dot(X',X',1)')-(2*(X*X'))));
+D1 = sqrt((X(1,1)-X(:,1)).^2+(X(1,2)-X(:,2)).^2);
 xVec = rand(N,N);
 
 c = zeros(N,N);
 for j=1:N
-c(:,j) = D(1,(j-1)*N+1:j*N);
+c(:,j) = D1((j-1)*N+1:j*N);
 end
 
 A = embedToeplitzBlockInCirculantBlock(c);
 % circXVec = reshape(embedToeplitzBlockInCirculantBlock(xVec),2*N,2*N);
-zeroPadXVec = [xVec, zeros(N,N); zeros(N,2*N)]
+zeroPadXVec = [xVec, zeros(N,N); zeros(N,2*N)];
 
-Ax = ifft2(fft2(reshape(A, 2*N, 2*N)).*fft2(zeroPadXVec));
+tic
+Ax = real(ifft2(fft2(reshape(A, 2*N, 2*N)).*fft2(zeroPadXVec)));
+toc
 AxGood = Ax(1:N,1:N);
 
-
-Ax = ifft(fft2(A).*fft2([xVec(:); zeros(N^2,1)]));
+tic
 Ax1=D*xVec(:);
+toc
 AxGood(:)-Ax1(:)
-
-Ax2=toeplitz([A(1) fliplr(A(2:end).')], A.')*[xVec(:);zeros(N^2,1)];
-Ax2(1:N^2)-Ax1(:)
+% 
+% Ax2=toeplitz([A(1) fliplr(A(2:end).')], A.')*[xVec(:);zeros(N^2,1)];
+% Ax2(1:N^2)-Ax1(:)

@@ -29,16 +29,17 @@ kMax = length(nonzeros(iElements));
 % up to machine precision. This is to avoid any issues with near field NaNs
 % not canceling out below. 
 
-
+fundamentalSolution=@(x)(reshape(1i/4*besselh(0,1,1i*waveNumber*((x~=0).*x+(abs(x)<1E-14).*1E300)),size(x)));
 sElements = zeros(kMax,1);
 % Question: Can this be done without the loop? This is about half my total
 % time!!!
 for j=1:kMax
     % build distance matrix between each expansion box element.
-    %expBoxI = [rectangularElementsX(iElements(j),:)',rectangularElementsY(iElements(j),:)'];
-    %expBoxJ = [rectangularElementsX(jElements(j),:)',rectangularElementsY(jElements(j),:)'];
-    %D = sqrt(bsxfun(@plus,full(dot(expBoxI',expBoxI',1)),full(dot(expBoxJ',expBoxJ',1))')-full(2*(expBoxJ*expBoxI')));
-    GDCurrent = GD(rectangularLocations(iElements(j),:), rectangularLocations(jElements(j),:));
+    expBoxI = [rectangularElementsX(iElements(j),:)',rectangularElementsY(iElements(j),:)'];
+    expBoxJ = [rectangularElementsX(jElements(j),:)',rectangularElementsY(jElements(j),:)'];
+    D = sqrt(bsxfun(@plus,full(dot(expBoxI',expBoxI',1)),full(dot(expBoxJ',expBoxJ',1))')-full(2*(expBoxJ*expBoxI')));
+%     GDCurrent = GD(rectangularLocations(iElements(j),:), rectangularLocations(jElements(j),:));
+    GDCurrent = fundamentalSolution(D);
     sElements(j) = flatP(iElements(j),:)*...
         (GDCurrent*flatP(jElements(j),:).');
 end
