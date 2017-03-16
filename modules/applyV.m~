@@ -24,19 +24,21 @@ function Vx = applyV(x,K,N,fftG, P, waveNumber, c0, farFieldStruct)
 % % !!!! Check: !!!! Why are we not just matrix multiplying? The order of P
 % % is strange, but it might not matter? 
 xHat = P*x;
-nG = sqrt(length(xHat));
+nG = length(xHat);
 % 
 % 
 % % Do the convolution with ffts. 
-xHat = reshape(xHat, nG, nG);
+
 xHatLong = [xHat, zeros(nG,nG); zeros(nG,2*nG)];
 
-yHatLong = ifft2(fftG.*fft2(xHatLong));
-yHat = yHatLong(1:nG, 1:nG);
-
+yHatLong = ifft2(fftG*fft2(xhatLong));
+yHatLong = yHatLong(1:nG, 1:nG);
+yHatLong = yHa
+% 
 % % Interpolate convolution operator back onto FEM grid
 % % y is now Vfarx.
-y = P'*yHat(:);
+y = P'*yhat;
+% y = fftG*x; 
 
 
 % Now add in the near field components. 

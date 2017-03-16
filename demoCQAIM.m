@@ -27,7 +27,7 @@ forwardParams
 
 tic
 %---- Generate scattered field data ----%
-GD = applyFundamentalSolution(waveNumber, farFieldStruct.farFieldGrid);
+[flatGD, GD] = applyFundamentalSolution(waveNumber, farFieldStruct.farFieldGrid);
 
 extraFarFieldElements = assembleFarFieldMatrix(waveNumber,  flatP, N, ...
     farFieldStruct.rectangularElementsX, farFieldStruct.rectangularElementsY, ...
@@ -35,15 +35,16 @@ extraFarFieldElements = assembleFarFieldMatrix(waveNumber,  flatP, N, ...
 
 
 uScatteredHat = generateUSHat(femStruct.uiHat, femStruct.triAreas, nearFieldDistances, iElements, ...
-    jElements, femStruct.centroids, extraFarFieldElements, c, c0, farFieldStruct.nG,N,waveNumber,flatP, P, GD, farFieldStruct);
+    jElements, femStruct.centroids, extraFarFieldElements, c, c0, farFieldStruct.nG,N,waveNumber,flatP, P, flatGD, farFieldStruct);
 qc = (1./(c(femStruct.centroids).^2)-1); uScatteredHat = 1./qc*uScatteredHat;
+
+
+toc
 
 
 %---- Plot results ----%
 figure
-pltsln(meshStruct,femStruct.centroids,-real(1/(waveNumber)*uScatteredHat))
-
-toc
+pltsln(meshStruct,femStruct.centroids,-imag(uScatteredHat))
 
 
 %------ End Demo ------%

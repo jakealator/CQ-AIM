@@ -41,12 +41,12 @@ tic
 
 uScatteredHatMoM = (KMat+MMat)\(-(KMat)*((1./c(femStruct.centroids).^2-1).*femStruct.uiHat));
 
+toc
 
 %---- Plot results ----%
 figure
 pltsln(meshStruct,femStruct.centroids,real(uScatteredHatMoM))
 
-toc
 
 
 

@@ -41,7 +41,7 @@ function usHat = generateUSHat(uiHat,triAreas, nearFieldDistances, iElements, ..
 [KMat,MMat] = assembleNearFieldMatrices(triAreas, nearFieldDistances, ...
     iElements, jElements, centroids, extraFarFieldElements, c,c0,waveNumber,N);
 
-fftG = fft2(reshape(flatGD, 2*sqrt(Ng), 2*sqrt(Ng)));
+fftG = fft2(reshape(flat, 2*N, 2*N));
 
 
 % All we need to do now is compute the rhs and then use conjugate gradient to
