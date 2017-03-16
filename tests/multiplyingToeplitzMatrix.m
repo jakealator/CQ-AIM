@@ -50,20 +50,22 @@ X = [X(:), Y(:)];
 D = sqrt(bsxfun(@plus,dot(X',X',1),dot(X',X',1)')-(2*(X*X')));
 xVec = rand(N,N);
 
-tRow = D(1,:); tRow=tRow(:);
-tCol = D(:,1); tCol=tCol(:);
-B = toeplitz([0; flipud(tRow(2:end))],[0; flipud(tCol(2:end))]);
+c = zeros(N,N);
+for j=1:N
+c(:,j) = D(1,(j-1)*N+1:j*N);
+end
 
+A = embedToeplitzBlockInCirculantBlock(c);
+% circXVec = reshape(embedToeplitzBlockInCirculantBlock(xVec),2*N,2*N);
+zeroPadXVec = [xVec, zeros(N,N); zeros(N,2*N)]
 
-
-A = [D(:,1); B(1,:).'];
-
-Ax = ifft2(fft2(reshape(A, N, 2*N)).*fft2([xVec zeros(N,N)]))
+Ax = ifft2(fft2(reshape(A, 2*N, 2*N)).*fft2(zeroPadXVec));
+AxGood = Ax(1:N,1:N);
 
 
 Ax = ifft(fft2(A).*fft2([xVec(:); zeros(N^2,1)]));
 Ax1=D*xVec(:);
-Ax(1:N^2)-Ax1(:)
+AxGood(:)-Ax1(:)
 
 Ax2=toeplitz([A(1) fliplr(A(2:end).')], A.')*[xVec(:);zeros(N^2,1)];
 Ax2(1:N^2)-Ax1(:)

@@ -13,18 +13,19 @@
 
 
 function c = embedToeplitzBlockInCirculantBlock(tCol,tRow)
+% c will be of the form c = [tCol; 0; flipud(tRow(2:end))];, where tCol and
+% tRow are the first row of each block
 
 N = length(tCol(1,:)); % get number of blocks
 M = length(tCol(:,1)); % get size of each block (MxM)
 
 c = zeros(2*N*M,1);
+c(1:N*M) = tCol(:);
+c(N*M+1:(N+1)*M) = zeros(M,1);
 
 for j=1:N
-    
-    
-
-tRow=tRow(:); tCol=tCol(:);
-c = [tCol; 0; flipud(tRow(2:end))];
+    c((N+j)*M+1:(N+1+j)*M) = tRow(j,:);
+end
     
 
 end
