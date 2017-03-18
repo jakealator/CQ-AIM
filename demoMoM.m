@@ -45,7 +45,7 @@ toc
 
 %---- Plot results ----%
 figure
-pltsln(meshStruct,femStruct.centroids,imag(uScatteredHatMoM))
+pltsln(meshStruct,femStruct.centroids,real(uScatteredHatMoM))
 
 
 

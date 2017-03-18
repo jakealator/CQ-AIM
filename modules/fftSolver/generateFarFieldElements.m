@@ -29,6 +29,7 @@ rectangularLocations = zeros(N,9);
 nG = length(farFieldGrid);
 
 for j=1:N
+    
     % Find the minimum L2-distance between each centroid and far field grid
     % element. This is probably a slower-than-needed method. 
     [~,I] = min(sqrt((centroids(j,1)-farFieldGrid(:,1)).^2+...

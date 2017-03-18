@@ -50,6 +50,7 @@ for j=1:N
     Vsquare = W\b;
     
     V(j,:) = Vsquare(:);
+    
 
 
 end

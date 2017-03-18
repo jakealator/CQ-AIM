@@ -55,7 +55,9 @@ function [femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, near
     % h/2. First find largest/smallest centroids.
     minX = min(centroids(:,1)); maxX = max(centroids(:,1));
     minY = min(centroids(:,2)); maxY = max(centroids(:,2));
-    [ffX,ffY] = meshgrid(minX-h:h/M:maxX+h, minY-h:h/M:maxY+h);
+    % Need to expand in a square right now. 
+    minXY = min(minX,minY); maxXY = max(maxX,maxY);
+    [ffX,ffY] = meshgrid(minXY-h:h/M:maxXY+h, minXY-h:h/M:maxXY+h);
     farFieldGrid = [ffX(:),ffY(:)]; % output is size NGx2.
     
     [centers, rectangularElementsX, rectangularElementsY, rectangularLocations, P,flatP] = generateFarFieldElements(centroids, M, N, farFieldGrid, h, midpointsX,midpointsY, triAreas);

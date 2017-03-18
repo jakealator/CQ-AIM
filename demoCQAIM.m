@@ -50,7 +50,7 @@ toc
 
 %---- Plot results ----%
 figure
-pltsln(meshStruct,femStruct.centroids,-imag(1/(2*waveNumber)*uScatteredHat))
+pltsln(meshStruct,femStruct.centroids,-real(1/(2*waveNumber)*uScatteredHat))
 
 
 %------ End Demo ------%
