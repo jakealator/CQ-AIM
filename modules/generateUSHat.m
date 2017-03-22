@@ -46,21 +46,21 @@ fftG = fft2(reshape(flatGD, 2*sqrt(Ng), 2*sqrt(Ng)));
 
 % All we need to do now is compute the rhs and then use conjugate gradient to
 % solve (I+V)x = rhs. 
-rhs = -waveNumber*applyV((1./c(centroids).^2-1).*uiHat,KMat,N,fftG,P, waveNumber, c0, farFieldStruct);
-size(rhs)
-usHat = cgs(@(x)applyIPlusV(x,MMat,KMat,N,fftG,P, waveNumber, c0, farFieldStruct),rhs,1E-3);
+rhs = applyV((1./c(centroids).^2-1).*uiHat,KMat,fftG,P, waveNumber);
+
+usHat = gmres(@(x)applyIPlusV(x,MMat,KMat,fftG,P, waveNumber),rhs,10,1E-3);
+% usHat = cgs(@(x)applyIPlusV(x,MMat,KMat,fftG,P, waveNumber),rhs,1E-3,50);
 
 
 end
 
 % aFarX applies operator Afar to a vector x. Output is approximation to Ax
 % evaluated back on finite element mesh through the interpolation matrix. 
-function Ax = applyIPlusV(x,M,K,N,fftG,P, waveNumber, c0, farFieldStruct)
+function Ax = applyIPlusV(x,M,K,fftG,P, waveNumber)
 
 % The function apply V does the V application quickly, so we only need to
 % add in the contribution from Mx
-Ax = M*x+applyV(x,K,N,fftG, P, waveNumber, c0, farFieldStruct);
-
+Ax = M*x+applyV(x,K,fftG, P, waveNumber);
 
 
 end

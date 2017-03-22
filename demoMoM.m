@@ -21,8 +21,8 @@ addpath(genpath('demo')) % Contains physical, geometric, and computational param
 addpath(genpath('modules')) % Contains the programs which actually compute
 
 %---- Initialize parameters ----%
-forwardParams
-[femStruct, farFieldStruct, ~, ~, ~, ~, ~,flatP] = generateAuxillaryParams(meshStruct, N, M, d, uiHatFun);
+forwardParamsTime
+[femStruct, farFieldStruct, ~, ~, ~, ~, ~,flatP] = generateAuxillaryParams(meshStruct, N, M, d);
 [iElements, jElements, multipoleMatrix] = generateNearFieldElements(N,0,0,0,0);
 
 
@@ -36,16 +36,55 @@ nearFieldDistances = sqrt(bsxfun(@plus,full(dot(X',X',1)),full(dot(X',X',1))')-f
 
 tic
 
-[KMat,MMat] = assembleNearFieldMatrices(femStruct.triAreas, nearFieldDistances, ...
-    iElements, jElements, femStruct.centroids, zeros(N,N), c,c0,waveNumber,N);
+% Matrices containing data
+uScatteredHatMoM = zeros(N,M+1);
+uiLambdaVec = zeros(N,M+1);
 
-uScatteredHatMoM = (KMat+MMat)\(-(KMat)*((1./c(femStruct.centroids).^2-1).*femStruct.uiHat));
+% Vectorize this!
+for j=1:MTime+1
+    uiLambdaVec(:,j) = lambda^(j-1)*uiFun(femStruct.centroids(:,1),femStruct.centroids(:,2),t(j));
+end
+
+uiHat = fft(uiLambdaVec,[],2);
+
+%-- Begin time-stepping routine. Take advantage of symmetry of Fourier
+%transform to half the number of needed solves
+for m=1:ceil((MTime-1)/2+1)
+    if ~mod(m,10)
+        m
+    end
+    
+    [KMat,MMat] = assembleNearFieldMatrices(femStruct.triAreas, nearFieldDistances, ...
+        iElements, jElements, femStruct.centroids, zeros(N,N), c,c0,s(m),N);
+
+
+    %uScatteredHatMoM(:,m) = (KMat+MMat)\(-(KMat)*((1./c(femStruct.centroids).^2-1).*uiHat(:,m)));
+    uScatteredHatMoM(:,m) = gmres((KMat+MMat),-(KMat)*((1./c(femStruct.centroids).^2-1).*uiHat(:,m)),10,1E-3,50);
+end
+uScatteredHatMoM(:,(ceil((MTime-1)/2+1)+1):(MTime+1)) = conj(uScatteredHatMoM(:,ceil((MTime-1)/2+1):-1:2));
+
+% Calculate us in the time domain    
+usMoM = ifft(uScatteredHatMoM,[],2);
+for m=1:MTime+1
+    usMoM(:,m) = (lambda^(-m+1))*usMoM(:,m); 
+end
+usMoM = real(usMoM); % NOTE THIS!
 
 toc
 
 %---- Plot results ----%
 figure
-pltsln(meshStruct,femStruct.centroids,real(uScatteredHatMoM))
+for j=1:MTime+1
+pltsln(meshStruct,femStruct.centroids,usMoM(:,j))
+%axis([-0.5,0.5,-0.5,0.5,min(min(us)),max(max(us))])
+caxis([min(min(usMoM)),max(max(usMoM))])
+title(t(j))
+view(2)
+pause(0.1)
+
+end
+
+
 
 
 

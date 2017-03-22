@@ -35,21 +35,19 @@
 % contains 4r. Spacing of grid is dictated by h and by the parameter M, the
 % multipole expansion order
 
-function [femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, nearFieldDistances, P,flatP] = generateAuxillaryParams(meshStruct, N, M, d, uiHatFun)
+% function [femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, nearFieldDistances, P,flatP] = generateAuxillaryParams(meshStruct, N, M, d, uiHat)
+function [femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, nearFieldDistances, P,flatP] = generateAuxillaryParams(meshStruct, N, M, d)
 
 
     % initialize centroids/midpoints
     centroids = generateCentroids(meshStruct, N);
     [midpointsX,midpointsY] = generateMidpoints(meshStruct,N);
     
-    % Define incident field on centroids
-    uiHat = uiHatFun(centroids);
-    
     %initialize triangle areas
     triAreas = generateTriangleAreas(meshStruct, N);
     
     % spatial discretization parameter h
-    h = mesh_size(meshStruct);
+    h = 1/2*mesh_size(meshStruct);
     
     %Generate a Cartesean grid containing D and a little extra with spacing
     % h/2. First find largest/smallest centroids.
@@ -68,7 +66,8 @@ function [femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, near
     % Calculate distances between near field elements
     nearFieldDistances = generateNearFieldDistances(centroids, iElements, jElements, N,M);
         
-    femStruct = struct('centroids',centroids,'midpointsX',midpointsX, 'midpointsY',midpointsY,'triAreas',triAreas,'N',N, 'uiHat', uiHat);
+%     femStruct = struct('centroids',centroids,'midpointsX',midpointsX, 'midpointsY',midpointsY,'triAreas',triAreas,'N',N, 'uiHat', uiHat);
+    femStruct = struct('centroids',centroids,'midpointsX',midpointsX, 'midpointsY',midpointsY,'triAreas',triAreas,'N',N);
     farFieldStruct = struct('farFieldGrid',farFieldGrid,'centers',centers,...
         'rectangularElementsX',rectangularElementsX,'rectangularElementsY',...
         rectangularElementsY, 'rectangularLocations', rectangularLocations,...

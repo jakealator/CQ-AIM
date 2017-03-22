@@ -16,7 +16,7 @@
 % version of the Lippmann-Schwinger integral operator. Note that this does
 % NOT apply the identity matrix component of the operator! 
 
-function Vx = applyV(x,K,N,fftG, P, waveNumber, c0, farFieldStruct)
+function Vx = applyV(x,K,fftG, P, waveNumber)
 
 % % %% Begin by computing Vfar*x
 

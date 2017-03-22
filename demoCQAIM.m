@@ -15,42 +15,72 @@
 %------ Begin Demo ------%
 clear
 
-% NOTE TO SELF:
-% 1) Something is wrong with creation of P
-% 2) the FFT routine calculates matrix-vector multiplication correctly
-% 3) In the calculation of extraFarFieldElements, we need to be sure to
-% calculate D quickly. 
-% 4) Look for TODOs in code!
-
-
 % Add required folders 
 addpath(genpath('demo')) % Contains physical, geometric, and computational parameters for demo
 addpath(genpath('modules')) % Contains the programs which actually compute
 
 %----Initialize parameters ----%
-forwardParams
-[femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, nearFieldDistances, P,flatP] = generateAuxillaryParams(meshStruct, N, M, d, uiHatFun);
+forwardParamsTime
+[femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, nearFieldDistances, P,flatP] = generateAuxillaryParams(meshStruct, N, M, d);
+qc = (1./(c(femStruct.centroids).^2)-1);
 
-tic
 %---- Generate scattered field data ----%
-[flatGD, GD] = applyFundamentalSolution(waveNumber, farFieldStruct.farFieldGrid);
 
-extraFarFieldElements = assembleFarFieldMatrix(waveNumber,  flatP, N, ...
+% Matrices containing data
+uScatteredHat = zeros(N,M+1);
+uiLambdaVec = zeros(N,M+1);
+
+% Vectorize this!
+for j=1:MTime+1
+    uiLambdaVec(:,j) = lambda^(j-1)*uiFun(femStruct.centroids(:,1),femStruct.centroids(:,2),t(j));
+end
+
+uiHat = fft(uiLambdaVec,[],2);
+
+%-- Begin time-stepping routine. Take advantage of symmetry of Fourier
+%transform to half the number of needed solves
+tic
+for m=1:ceil((MTime-1)/2+1)
+    
+    m
+    
+    [flatGD, GD] = applyFundamentalSolution(s(m), farFieldStruct.farFieldGrid);
+
+    extraFarFieldElements = assembleFarFieldMatrix(s(m),  flatP, N, ...
     farFieldStruct.rectangularElementsX, farFieldStruct.rectangularElementsY, ...
     iElements, jElements, farFieldStruct.rectangularLocations, GD);
 
+    uScatteredHat(:,m) = generateUSHat(uiHat(:,m), femStruct.triAreas, nearFieldDistances, iElements, ...
+    jElements, femStruct.centroids, extraFarFieldElements, c, c0, farFieldStruct.nG,N,s(m), P, flatGD, farFieldStruct);
+end
 
-uScatteredHat = generateUSHat(femStruct.uiHat, femStruct.triAreas, nearFieldDistances, iElements, ...
-jElements, femStruct.centroids, extraFarFieldElements, c, c0, farFieldStruct.nG,N,waveNumber, P, flatGD, farFieldStruct);
-qc = (1./(c(femStruct.centroids).^2)-1); uScatteredHat = 1./qc*uScatteredHat;
+uScatteredHat = 1./(2*qc).*uScatteredHat;
+uScatteredHat(:,(ceil((MTime-1)/2+1)+1):(MTime+1)) = conj(uScatteredHat(:,ceil((MTime-1)/2+1):-1:2));
 
+% Calculate us in the time domain    
+us = ifft(uScatteredHat,[],2);
+for m=1:MTime+1
+    us(:,m) = (lambda^(-m+1))*us(:,m); 
+end
+us = real(us); 
 
 toc
 
-
 %---- Plot results ----%
 figure
-pltsln(meshStruct,femStruct.centroids,-real(1/(2*waveNumber)*uScatteredHat))
+for j=1:201
+pltsln(meshStruct,femStruct.centroids,us(:,j))
+%axis([-0.5,0.5,-0.5,0.5,min(min(us)),max(max(us))])
+caxis([min(min(us(:,1:100))),max(max(us(:,1:100)))])
+title(t(j))
+view(2)
+pause(0.1)
+
+end
 
 
 %------ End Demo ------%
+
+
+
+

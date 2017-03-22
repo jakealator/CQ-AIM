@@ -13,9 +13,7 @@ function [flatGD, GD] = applyFundamentalSolution(waveNumber, X)
 
 fundamentalSolution=@(x)(reshape(1i/4*besselh(0,1,1i*waveNumber*((x~=0).*x+(abs(x)<1E-14).*1E300)),size(x)));
 
-% Calculate pairwise distances 
-% D = sqrt(bsxfun(@plus,dot(X',X',1),dot(X',X',1)')...
-%     -(2*(X*X')));
+% Calculate vector of pairwise distances and
 % apply fundamental solution
 D = sqrt((X(1,1)-X(:,1)).^2+(X(1,2)-X(:,2)).^2);
 GD = fundamentalSolution(D);

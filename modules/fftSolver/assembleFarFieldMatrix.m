@@ -33,12 +33,24 @@ fundamentalSolution=@(x)(reshape(1i/4*besselh(0,1,1i*waveNumber*((x~=0).*x+(abs(
 sElements = zeros(kMax,1);
 % Question: Can this be done without the loop? This is about half my total
 % time!!!
+% D = sqrt(bsxfun(@plus,dot(X',X',1),dot(X',X',1)')-(2*(X*X')));
+% GD = fundamentalSolution(D);
+% A_{i,j} = a_{i-j} in a toeplitz matrix like GD. Hence, since GD is a 1xnG
+% vector and the matrix version is symmetric, the element (i,j) is in
+% location GD(abs(1-j)). 
 for j=1:kMax
     % build distance matrix between each expansion box element.
-    expBoxI = [rectangularElementsX(iElements(j),:)',rectangularElementsY(iElements(j),:)'];
-    expBoxJ = [rectangularElementsX(jElements(j),:)',rectangularElementsY(jElements(j),:)'];
-    D = sqrt(bsxfun(@plus,full(dot(expBoxI',expBoxI',1)),full(dot(expBoxJ',expBoxJ',1))')-full(2*(expBoxJ*expBoxI')));
-%     GDCurrent = GD(rectangularLocations(iElements(j),:), rectangularLocations(jElements(j),:));
+   expBoxI = [rectangularElementsX(iElements(j),:)',rectangularElementsY(iElements(j),:)'];
+   expBoxJ = [rectangularElementsX(jElements(j),:)',rectangularElementsY(jElements(j),:)'];
+   D = sqrt(bsxfun(@plus,full(dot(expBoxI',expBoxI',1)),full(dot(expBoxJ',expBoxJ',1))')-full(2*(expBoxJ*expBoxI')));
+
+%       toeplitzRows = reshape(GD(abs(1-(rectangularLocations(iElements(j),1)-rectangularLocations(jElements(j),:)))),3,3).';
+%       tRR = real(toeplitzRows); tRI = imag(toeplitzRows);
+%       A = toeplitz(tRR(1,:))+1i*toeplitz(tRI(1,:)); 
+%       B = toeplitz(tRR(2,:))+1i*toeplitz(tRI(2,:)); 
+%       C = toeplitz(tRR(3,:))+1i*toeplitz(tRI(3,:));
+%       GDCurrent = [A, B, C; B, A, B; C, B, A];
+     
     GDCurrent = fundamentalSolution(D);
     sElements(j) = flatP(iElements(j),:)*...
         (GDCurrent*flatP(jElements(j),:).');

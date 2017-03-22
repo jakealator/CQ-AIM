@@ -47,9 +47,7 @@ for j=1:N
     % Calcualte the entries of rectangularElementsX/Y in farFieldGrid. To
     % do this, first find where they would be in a nGxnG matrix of farField
     %Grid. Then convert to the linear index. 
-    % TODO: This gets the right elements, at least for i=j=1, but in the
-    % wrong order
-    [Ix,Iy]=ind2sub([sqrt(nG),sqrt(nG)],I);
+    [Ix,Iy]=ind2sub([sqrt(nG),sqrt(nG)],I); 
     [IxSquare,IySquare] = meshgrid(Ix-1:1:Ix+1,Iy-1:1:Iy+1);
     IxSquare=IxSquare'; IySquare=IySquare';
     Ix=IxSquare(:);Iy=IySquare(:);
@@ -71,7 +69,10 @@ flatP = generateInterpolationMatrix(centers, rectangularElementsX, rectangularEl
 
 femIndex = repmat(1:N,9,1);
 femIndex = femIndex(:);
-P = sparse(rectangularLocations(:),femIndex,flatP,nG,N);
+rectangularLocationsSideways=rectangularLocations.';
+rectangularLocationsSideways = rectangularLocationsSideways(:);
+flatPSideways = flatP.';
+P = sparse(rectangularLocationsSideways,femIndex,flatPSideways(:),nG,N);
 
 
 end
