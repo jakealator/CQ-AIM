@@ -19,61 +19,28 @@ clear
 addpath(genpath('demo')) % Contains physical, geometric, and computational parameters for demo
 addpath(genpath('modules')) % Contains the programs which actually compute
 
-%----Initialize parameters ----%
+%---- Initialize parameters ----%
 forwardParamsTime
 [femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, nearFieldDistances, P,flatP] = generateAuxillaryParams(meshStruct, N, M, d);
 qc = (1./(c(femStruct.centroids).^2)-1);
 
-%---- Generate scattered field data ----%
-
-% Matrices containing data
-uScatteredHat = zeros(N,M+1);
-uiLambdaVec = zeros(N,M+1);
-
-% Vectorize this!
-for j=1:MTime+1
-    uiLambdaVec(:,j) = lambda^(j-1)*uiFun(femStruct.centroids(:,1),femStruct.centroids(:,2),t(j));
-end
-
-uiHat = fft(uiLambdaVec,[],2);
-
-%-- Begin time-stepping routine. Take advantage of symmetry of Fourier
-%transform to half the number of needed solves
 tic
-for m=1:ceil((MTime-1)/2+1)
-    
-    m
-    
-    [flatGD, GD] = applyFundamentalSolution(s(m), farFieldStruct.farFieldGrid);
-
-    extraFarFieldElements = assembleFarFieldMatrix(s(m),  flatP, N, ...
-    farFieldStruct.rectangularElementsX, farFieldStruct.rectangularElementsY, ...
-    iElements, jElements, farFieldStruct.rectangularLocations, GD);
-
-    uScatteredHat(:,m) = generateUSHat(uiHat(:,m), femStruct.triAreas, nearFieldDistances, iElements, ...
-    jElements, femStruct.centroids, extraFarFieldElements, c, c0, farFieldStruct.nG,N,s(m), P, flatGD, farFieldStruct);
-end
-
-uScatteredHat = 1./(2*qc).*uScatteredHat;
-uScatteredHat(:,(ceil((MTime-1)/2+1)+1):(MTime+1)) = conj(uScatteredHat(:,ceil((MTime-1)/2+1):-1:2));
-
-% Calculate us in the time domain    
-us = ifft(uScatteredHat,[],2);
-for m=1:MTime+1
-    us(:,m) = (lambda^(-m+1))*us(:,m); 
-end
-us = real(us); 
+%---- Find scattered Field ---%
+%us = RKcqify(femStruct, farFieldStruct, N, MTime, t, dt, lambda, flatP, P, ...
+%    iElements, jElements, nearFieldDistances, uiFun, c, c0, qc);
+ us = cqify(femStruct, farFieldStruct, N, MTime, s, t, lambda, flatP, P, ...
+     iElements, jElements, nearFieldDistances, uiFun, qc, c0);
 
 toc
 
 %---- Plot results ----%
 figure
-for j=1:201
+for j=1:MTime+1
 pltsln(meshStruct,femStruct.centroids,us(:,j))
-%axis([-0.5,0.5,-0.5,0.5,min(min(us)),max(max(us))])
-caxis([min(min(us(:,1:100))),max(max(us(:,1:100)))])
+axis([-0.5,0.5,-0.5,0.5,min(min(us)),max(max(us))])
+ caxis([min(min(us)),max(max(us))])
 title(t(j))
-view(2)
+% view(2)
 pause(0.1)
 
 end

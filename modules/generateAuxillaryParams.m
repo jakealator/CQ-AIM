@@ -47,7 +47,7 @@ function [femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, near
     triAreas = generateTriangleAreas(meshStruct, N);
     
     % spatial discretization parameter h
-    h = 1/2*mesh_size(meshStruct);
+    h = 1/3*mesh_size(meshStruct);
     
     %Generate a Cartesean grid containing D and a little extra with spacing
     % h/2. First find largest/smallest centroids.

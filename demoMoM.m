@@ -61,6 +61,7 @@ for m=1:ceil((MTime-1)/2+1)
     %uScatteredHatMoM(:,m) = (KMat+MMat)\(-(KMat)*((1./c(femStruct.centroids).^2-1).*uiHat(:,m)));
     uScatteredHatMoM(:,m) = gmres((KMat+MMat),-(KMat)*((1./c(femStruct.centroids).^2-1).*uiHat(:,m)),10,1E-3,50);
 end
+uScatteredHatMoM = 1./((1./c(femStruct.centroids).^2-1)).*uScatteredHatMoM;
 uScatteredHatMoM(:,(ceil((MTime-1)/2+1)+1):(MTime+1)) = conj(uScatteredHatMoM(:,ceil((MTime-1)/2+1):-1:2));
 
 % Calculate us in the time domain    

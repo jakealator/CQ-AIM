@@ -14,22 +14,22 @@
 %        s                   - frequency
 %        N                   - number of elements
 %
-% Output: K               - "stiffness" matrix
-%         M               - "mass" matrix
+% Output: K               - "stiffness" matrix (integral operator on
+%                            near field components)
+%         M               - "mass" matrix (identity operator on -all-
+%                            elements)
 %
 % Outputs the near field components of the AIM algorithm for computing the
 % action of the time-harmonic Lippmann-Schwinger equation on a vector. Uses
 % p=0 piecewise constant elements on each element and approximates
 % integrals on triangles with an exact formula on an equal area circle. 
 
-function [K,M] = assembleNearFieldMatrices(triAreas, nearFieldDistances, iElements, jElements, centroids, extraFarFieldElements, c,c0,waveNumber,N)
+function [K,M] = assembleNearFieldMatrices(triAreas, nearFieldDistances, iElements, jElements, extraFarFieldElements, qc,c0,waveNumber,N)
 
-% Contrasts at centroid points
-qj =((c0./c(centroids(:,1),centroids(:,2))).^2-ones(N,1));
+% -- First compute K, the integral operator --%
 
-
-KElements = zeros(length(iElements),1); % Will hold values of K ('stiffness') matrix
-MElements = zeros(length(iElements),1); % Will hold values of M (mass) matrix
+KElements = zeros(length(iElements),1); % Will hold values of K ('stiffness') matrix at near field components
+% Use the formulas: 
 %K(diagonal) = -triangleAreas.*(4*1i*c0^2/s^2+(2*pi*1i*c0/s).*H11);
 %K(off-diagonal) = triangleAreas(i)*triangleAreas(j)*H01(i,j)
 % Only calculate values where we have specified elements to be 'near field'
@@ -39,22 +39,23 @@ for k = 1:length(iElements)
     if iElements(k)==jElements(k) % On the diagonal
         KElements(k) = -triAreas(iElements(k))^2.*(4*1i*c0^2/waveNumber^2+(2*pi*1i*c0/waveNumber).*...
             besselh(1,1,1i*waveNumber/c0*sqrt(triAreas(iElements(k))/pi)));
-        MElements(k) = triAreas(iElements(k))/qj(iElements(k));
     else
         KElements(k) = triAreas(iElements(k))*triAreas(jElements(k))*...
             besselh(0,1,1i*waveNumber/c0*currentNearFieldDistance);
     end
 end
 
-% Create a sparse matrix whose diagonal elements correspond to qj at
-% required are exactly the ones
-% created above 
-M = sparse(iElements,jElements,MElements,N,N);
 % Subtract off the extra far field contributions to prevent double counting
 % in the near field (order is the same as KElements because i/jElements are
 % used to order both.     
 K = sparse(iElements,jElements,KElements,N,N);
-
 K = (1i*waveNumber^2)/(4*c0^2)*K-waveNumber^2*extraFarFieldElements;
+
+% -- Identity matrix --%
+% Create a sparse matrix whose diagonal elements correspond to qj at
+% required are exactly the ones created above 
+%M = spdiags(triAreas./qc,0,N,N);
+M = sparse(1:N,1:N,triAreas./qc,N,N);
+
 
 end

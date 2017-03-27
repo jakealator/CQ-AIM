@@ -34,11 +34,12 @@ uiHat = generateUIHat(uiHatFun, femStruct);
 
 
 tic
+qc = (1./(c(femStruct.centroids).^2)-1);
 [KMat,MMat] = assembleNearFieldMatrices(femStruct.triAreas, nearFieldDistances, ...
-        iElements, jElements, femStruct.centroids, zeros(N,N), c,c0,waveNumber,N);
+        iElements, jElements, femStruct.centroids, zeros(N,N), qc,c0,waveNumber,N);
 
-
-uScatteredHatMoM = (KMat+MMat)\(-(KMat)*((1./c(femStruct.centroids).^2-1).*uiHat));
+uHatMoM = (KMat+MMat)\(-(MMat)*(qc.*uiHat));
+uScatteredHatMoM = uHatMoM - uiHat;
 
 toc
 
