@@ -12,19 +12,20 @@ function dist = cubeDistance(CaX,CaY,CbX,CbY)
 
 Na = length(CaX);
 Nb = length(CbX);
+currentDist = zeros(Na,Nb);
 
-dist = 1E14; 
+% dist = 1E14; 
 
 for i=1:Na
     for j=1:Nb
-        currentDist = max(abs(CaX(i)-CbX(j)),abs(CaY(i)-CbY(j)));
-        
-        if  currentDist < dist
-            
-            dist = currentDist;
-        end
+        currentDist(i,j) = max(abs(CaX(i)-CbX(j)),abs(CaY(i)-CbY(j)));
+%         
+%         if  currentDist < dist
+%             dist = currentDist;
+%         end
     end
 end
+dist = min(min(currentDist));
 
 
 

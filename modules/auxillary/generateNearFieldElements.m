@@ -34,6 +34,9 @@ elseif M==2
     
     k = 0; % tracks number of non-zero elements
     for i=1:N
+%         if (mod(i,10)==0)
+%             i
+%         end
         for j=1:N 
             if (cubeDistance(rectangularElementsX(i,:),rectangularElementsY(i,:), rectangularElementsX(j,:),rectangularElementsY(j,:) )<d*h)
                 k=k+1;

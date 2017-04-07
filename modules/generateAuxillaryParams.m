@@ -35,7 +35,6 @@
 % contains 4r. Spacing of grid is dictated by h and by the parameter M, the
 % multipole expansion order
 
-% function [femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, nearFieldDistances, P,flatP] = generateAuxillaryParams(meshStruct, N, M, d, uiHat)
 function [femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, nearFieldDistances, P,flatP] = generateAuxillaryParams(meshStruct, N, M, d)
 
 
@@ -46,7 +45,7 @@ function [femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, near
     %initialize triangle areas
     triAreas = generateTriangleAreas(meshStruct, N);
     
-    % spatial discretization parameter h
+    %grid spatial discretization parameter h
     h = 1/3*mesh_size(meshStruct);
     
     %Generate a Cartesean grid containing D and a little extra with spacing
@@ -55,18 +54,19 @@ function [femStruct, farFieldStruct, iElements, jElements, multipoleMatrix, near
     minY = min(centroids(:,2)); maxY = max(centroids(:,2));
     % Need to expand in a square right now. 
     minXY = min(minX,minY); maxXY = max(maxX,maxY);
-    [ffX,ffY] = meshgrid(minXY-h:h/M:maxXY+h, minXY-h:h/M:maxXY+h);
+    [ffX,ffY] = meshgrid(minXY-M*h:h:maxXY+M*h, minXY-M*h:h:maxXY+M*h);
     farFieldGrid = [ffX(:),ffY(:)]; % output is size NGx2.
     
     [centers, rectangularElementsX, rectangularElementsY, rectangularLocations, P,flatP] = generateFarFieldElements(centroids, M, N, farFieldGrid, h, midpointsX,midpointsY, triAreas);
     
     %intitialize multipole matrix
     [iElements, jElements, multipoleMatrix] = generateNearFieldElements(N,M,rectangularElementsX,rectangularElementsY,h,d);
+%     iElements = 1:N; jElements = iElements; multipoleMatrix = 0;
     
     % Calculate distances between near field elements
     nearFieldDistances = generateNearFieldDistances(centroids, iElements, jElements, N,M);
+%     nearFieldDistances = 0;
         
-%     femStruct = struct('centroids',centroids,'midpointsX',midpointsX, 'midpointsY',midpointsY,'triAreas',triAreas,'N',N, 'uiHat', uiHat);
     femStruct = struct('centroids',centroids,'midpointsX',midpointsX, 'midpointsY',midpointsY,'triAreas',triAreas,'N',N);
     farFieldStruct = struct('farFieldGrid',farFieldGrid,'centers',centers,...
         'rectangularElementsX',rectangularElementsX,'rectangularElementsY',...

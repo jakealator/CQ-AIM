@@ -24,6 +24,7 @@ for m=1:ceil((MTime-1)/2+1)
     rhs = kron(inv(PEig),speye(N))*uiHat(:,m);
     for p=1:numberStages
         currentElements = (p-1)*N+1:p*N;
+        Lambda(p)
         [flatGD, GD] = applyFundamentalSolution(Lambda(p), farFieldStruct.farFieldGrid);
 
         extraFarFieldElements = assembleFarFieldMatrix(Lambda(p),  flatP, N, ...
@@ -38,7 +39,7 @@ for m=1:ceil((MTime-1)/2+1)
     
 end
 
-% uScatteredHat = 1./(2*qc.^2).*uScatteredHat;
+% uScatteredHat = 1./(2*qc).*uScatteredHat;
 uScatteredHat(:,(ceil((MTime-1)/2+1)+1):(MTime+1)) = conj(uScatteredHat(:,ceil((MTime-1)/2+1):-1:2));
 
 

@@ -33,7 +33,11 @@ function us = cqify(femStruct, farFieldStruct, N, MTime, s, t, lambda, flatP, P,
 
 
 %---- Generate scattered field data ----%
-uiHat = sampleAndTransform(uiFun(femStruct.centroids(:,1),femStruct.centroids(:,2),t),lambda,MTime);
+uiHatEval = zeros(N,MTime+1);
+for k=1:MTime+1
+    uiHatEval(:,k) = uiFun(femStruct.centroids(:,1),femStruct.centroids(:,2),t(k));
+end
+uiHat = sampleAndTransform(uiHatEval,lambda,MTime);
 
 %-- Begin time-stepping routine. 
 tic
@@ -42,7 +46,7 @@ uScatteredHat = timeStepper(N, MTime, s, farFieldStruct, femStruct,...
 toc
 
 % Calculate us in the time domain    
-us = transformAndSample(uScatteredHat,lambda,MTime)-uiFun(femStruct.centroids(:,1),femStruct.centroids(:,2),t);
+us = transformAndSample(uScatteredHat,lambda,MTime)-uiHatEval;
 
 
 

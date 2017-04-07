@@ -39,7 +39,12 @@ function usHat = generateUSHat(uiHat,triAreas, nearFieldDistances, iElements, ..
 
 % First compute near field components 
 [KMat,MMat] = assembleNearFieldMatrices(triAreas, nearFieldDistances, ...
-    iElements, jElements, extraFarFieldElements, qc, c0,waveNumber,N);
+   iElements, jElements, extraFarFieldElements, qc, c0,waveNumber,N);
+% KElements = -triAreas.^2.*(4*1i*c0^2/waveNumber^2+(2*pi*1i*c0/waveNumber).*...
+%             besselh(1,1,1i*waveNumber/c0*sqrt(triAreas/pi)));
+% KMat = sparse(iElements,jElements,KElements,N,N);
+% KMat = (1i*waveNumber^2)/(4*c0^2)*KMat-waveNumber^2*extraFarFieldElements;
+% MMat = sparse(1:N,1:N,triAreas./qc,N,N);
 
 fftG = fft2(reshape(flatGD, 2*sqrt(Ng), 2*sqrt(Ng)));
 
@@ -49,7 +54,8 @@ fftG = fft2(reshape(flatGD, 2*sqrt(Ng), 2*sqrt(Ng)));
 %rhs = applyV((1./c(centroids).^2-1).*uiHat,KMat,fftG,P, waveNumber);
     rhs = MMat*uiHat;
     %usHat = gmres(@(x)applyIPlusV(x,MMat,KMat,fftG,P, waveNumber),rhs,30,1E-2);
-    usHat = cgs(@(x)applyIPlusV(x,MMat,KMat,fftG,P, waveNumber),rhs,1E-5,50);
+    [usHat,~] = cgs(@(x)applyIPlusV(x,MMat,KMat,fftG,P, waveNumber),rhs,1E-3,20,@(x)(x./triAreas));
+    
 
 
 end

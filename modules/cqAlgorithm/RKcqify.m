@@ -29,7 +29,7 @@
 % methods. 
 
 function us = RKcqify(femStruct, farFieldStruct, N, MTime, t, dt, lambda, flatP, P, ...
-    iElements, jElements, nearFieldDistances, uiFun, c, c0, qc) 
+    iElements, jElements, nearFieldDistances, uiFun, qc, c0) 
 
 A=[5/12 -1/12; 3/4 1/4]; cRK = [1/3,1]; % Radau-II
 %A = [1/6 -1/3 1/6; 1/6 5/12 -1/12; 1/6 2/3 1/6]; cRK = [0 1/2 1]; % Radau-III
@@ -40,7 +40,7 @@ A=[5/12 -1/12; 3/4 1/4]; cRK = [1/3,1]; % Radau-II
         currentElements = (p-1)*N+1:p*N;
         uiSample(currentElements,:) = uiFun(femStruct.centroids(:,1),femStruct.centroids(:,2),t+dt*cRK(p));
     end
-uiHat = sampleAndTransform(uiSample,lambda,MTime);
+ uiHat = sampleAndTransform(uiSample,lambda,MTime);
 
 %-- Begin time-stepping routine. 
 tic
@@ -48,13 +48,9 @@ uScatteredHat = RKtimeStepper(N, MTime, A, farFieldStruct, femStruct,...
     P, flatP, iElements, jElements, uiHat, nearFieldDistances, qc, c0, lambda,dt);
 toc
 
-% Calculate us in the time domain    
+% Calculate us in the time domain  
 usFull = transformAndSample(uScatteredHat,lambda,MTime);
-
-us = zeros(N,MTime+1);
-for j=1:MTime+1
-    us(:,j) = usFull((length(A)-1)*N+1:end,j);
-end
+us = usFull((length(A)-1)*N+1:end,:);
 
 
 end

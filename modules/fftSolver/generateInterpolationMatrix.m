@@ -14,13 +14,15 @@
 % functions on FEM triangulation and "delta basis functions" on Cartesian
 % discretization. 
 
-function V = generateInterpolationMatrix(centers, rectangularElementsX, rectangularElementsY, midpointsX,midpointsY, triAreas, N,varargin)
+function V = generateInterpolationMatrix(centers, rectangularElementsX, rectangularElementsY, midpointsX,midpointsY, triAreas, N, M,varargin)
 
-V = zeros(N,9);
+V = zeros(N,(M+1)^2);
 
-if nargin == 7
+if nargin == 8
     % Order of m-vector containing exponents
-    mVec = [[0,0];[0,1];[0,2];[1,0];[1,1];[1,2];[2,0];[2,1];[2,2]];
+    [mX,mY]=meshgrid(0:M,0:M);
+%     mVec = [[0,0];[0,1];[0,2];[1,0];[1,1];[1,2];[2,0];[2,1];[2,2]];
+    mVec = [mX(:),mY(:)];
 
     % Use quadrature against bFun to calculate rhs
     bFun = @(x,y,m,midpointsX,midpointsY)((midpointsX-x)^m(1)*(midpointsY-y)^m(2));
@@ -28,19 +30,19 @@ if nargin == 7
 
     % Compute V for each element/expansion cube
     for j=1:N
-        W = zeros(9,9);
-        b = zeros(9,1);
+        W = zeros((M+1)^2,(M+1)^2);
+        b = zeros((M+1)^2,1);
 
         % Use midpoint rule to compute righ-hand-side. This is exact for
         % polynomials up to 2nd order so is fine for M=2
         % WAIT: Does this incur error? I think it does. 
-        for k=1:9
+        for k=1:(M+1)^2
             b(k) = (bFun(centers(j,1),centers(j,2),mVec(k,:),midpointsX(j,1),midpointsY(j,1))+...
                 bFun(centers(j,1),centers(j,2),mVec(k,:),midpointsX(j,2),midpointsY(j,2))+...
                 bFun(centers(j,1),centers(j,2),mVec(k,:),midpointsX(j,3),midpointsY(j,3)));
 
             % Now compute (shifted) Vandermonde matrix W
-            for ell = 1:9
+            for ell = 1:(M+1)^2
                 W(k,ell) = (rectangularElementsX(j,ell)-centers(j,1))^mVec(k,1)...
                     *(rectangularElementsY(j,ell)-centers(j,2))^mVec(k,2);
             end
@@ -52,6 +54,7 @@ if nargin == 7
 
         V(j,:) = Vsquare(:);
 
+%         V(j,:) = repmat(triAreas(j)/(M+1)^2,(M+1)^2,1);
 
     end
 else

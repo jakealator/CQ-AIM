@@ -21,17 +21,18 @@ uiFun=@(x,y,t)(sin(aUi.*(t-(incD(1).*x+incD(2).*y)./c0)).*exp(-bUi.*(t-(incD(1).
 
 
 %---- Values for CQ ----%
-delta = @(xi)(1-xi); % Backwards Euler
-%delta = @(xi)(3/2*(1-4/3*xi+1/3*xi.^2)); % BDF2
+%delta = @(xi)(1-xi); % Backwards Euler
+delta = @(xi)(3/2*(1-4/3*xi+1/3*xi.^2)); % BDF2
 %delta = @(xi)((2*(1-xi)./(1+xi))); % Trapezoidal rule
 
-MTime=100; %Needs to be an even number right now
+MTime=200; %Needs to be an even number right now
 T = 6;
 dt = T/MTime;
 t = linspace(0,T,MTime+1);
 % lambda chosen according to L. Banjai, S. Sautor, Rapid solution of the
 % wave equation in unbounded domains, 2008. 
-lambda = max((dt)^(3/MTime),(eps)^(1/(2*MTime)));
+%lambda = max((dt)^(3/MTime),(eps)^(1/(2*MTime)));
+lambda = 0.995;
 s = (1/dt)*delta(lambda*exp((-2*pi*1i*(0:MTime))/(MTime+1)));
 
 %----------------------------------%
@@ -45,5 +46,5 @@ s = (1/dt)*delta(lambda*exp((-2*pi*1i*(0:MTime))/(MTime+1)));
 
 % Far field parameters
 M = 2; % (MUST be 2) % Multipole expansion parameter 
-d = 8; % Near field distance parameter (>=3)
+d = 20; % Near field distance parameter (>=3)
 %-----------------------------%

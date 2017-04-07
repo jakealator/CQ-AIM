@@ -23,9 +23,9 @@
 function [centers, rectangularElementsX, rectangularElementsY, rectangularLocations, P,flatP] = generateFarFieldElements(centroids, M, N, farFieldGrid, h, midpointsX,midpointsY, triAreas)
 
 centers = zeros(N,2);
-rectangularElementsX = zeros(N,9);
-rectangularElementsY = zeros(N,9);
-rectangularLocations = zeros(N,9);
+rectangularElementsX = zeros(N,(M+1)^2);
+rectangularElementsY = zeros(N,(M+1)^2);
+rectangularLocations = zeros(N,(M+1)^2);
 nG = length(farFieldGrid);
 
 for j=1:N
@@ -40,17 +40,21 @@ for j=1:N
     % closest components of farFieldGrid on either side. Shouldn't need 
     % to worry about edge cases because there's a built-in buffer in the
     % grid. 
-    [rectangularElementsXSquare,rectangularElementsYSquare] = meshgrid(centers(j,1)-h/M:h/M:centers(j,1)+h/M,...
-        centers(j,2)-h/M:h/M:centers(j,2)+h/M);
+%     [rectangularElementsXSquare,rectangularElementsYSquare] = meshgrid(centers(j,1)-h/M:h/M:centers(j,1)+h/M,...
+%         centers(j,2)-h/M:h/M:centers(j,2)+h/M);
+    [rectangularElementsXSquare,rectangularElementsYSquare] = meshgrid(centers(j,1)-(M/2)*h:h:centers(j,1)+(M/2)*h,...
+        centers(j,2)-(M/2)*h:h:centers(j,2)+(M/2)*h);
+
     rectangularElementsX(j,:)=rectangularElementsXSquare(:); 
     rectangularElementsY(j,:)=rectangularElementsYSquare(:);
     % Calcualte the entries of rectangularElementsX/Y in farFieldGrid. To
     % do this, first find where they would be in a nGxnG matrix of farField
     %Grid. Then convert to the linear index. 
     [Ix,Iy]=ind2sub([sqrt(nG),sqrt(nG)],I); 
-    [IxSquare,IySquare] = meshgrid(Ix-1:1:Ix+1,Iy-1:1:Iy+1);
+    [IxSquare,IySquare] = meshgrid(Ix-(M/2):1:Ix+(M/2),Iy-(M/2):1:Iy+(M/2));
     IxSquare=IxSquare'; IySquare=IySquare';
     Ix=IxSquare(:);Iy=IySquare(:);
+    
     rectangularLocations(j,:) = sub2ind([sqrt(nG),sqrt(nG)],Ix,Iy);
 
     if ~((abs(rectangularElementsX(j,:)'-farFieldGrid(rectangularLocations(j,:),1))<1E-15)&(abs(rectangularElementsY(j,:)'-farFieldGrid(rectangularLocations(j,:),2))<1E-15))
@@ -65,9 +69,9 @@ end
 % Using the above, create the interpolation matrix P. The function generate
 % InerpolationMatrix is Nx9. We want to unflatten it according to
 % rectangularLocations. 
-flatP = generateInterpolationMatrix(centers, rectangularElementsX, rectangularElementsY, midpointsX,midpointsY, triAreas, N);
+flatP = generateInterpolationMatrix(centers, rectangularElementsX, rectangularElementsY, midpointsX,midpointsY, triAreas, N, M);
 
-femIndex = repmat(1:N,9,1);
+femIndex = repmat(1:N,(M+1)^2,1);
 femIndex = femIndex(:);
 rectangularLocationsSideways=rectangularLocations.';
 rectangularLocationsSideways = rectangularLocationsSideways(:);
